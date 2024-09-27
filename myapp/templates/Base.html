@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Trang chủ{% endblock %}</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    {% block css %} {% endblock %}
+
+</head>
+<body>
+    <div class="side-bar" id="side-bar">
+        <div class="menuExpand">
+            <a class="logo" href ='/dash-board'><span>LUCOS</span></a>
+            <button class="btnExpand" id="btnExpand"><i class="fas fa-bars"></i></button>
+        </div>
+
+        <nav class="navigation">
+            <button class="btnView" id="show-customer" onclick="window.location.href='{{ infor_url }}'"><i class="fas fa-user"></i><span> Khách hàng</span></button>
+            <button class="btnAdd" id="show-create" onclick="window.location.href='{{ create_url }}'"><i class="fas fa-user-plus"></i><span> Thêm khách hàng</span></button>
+            <button class="btnTask" onclick="window.location.href='{{ task_url }}'"><i class="fas fa-tasks"></i><span> Task</span></button>
+            <button class="btnSpa" onclick="window.location.href='{{ spa_url }}'"><i class="fas fa-spa"></i><span> Spa</span></button>
+            <button class="btnReport" onclick="window.location.href='{{ report_url }}'"><i class="fas fa-file-alt"></i><span>Báo cáo</span></button>
+        </nav>
+    </div>
+    <div class="screen">
+        <div class="top-bar">
+            <header>
+                <nav class="navigation">
+                    <a href="#">Home</a>
+                    <a href="#">About</a>
+                    <a href="#">Contact</a>
+                    <a class="username" href="#"><div class="user-avatar"><i class="user-image fas fa-user"></i></div> {{ current_user.full_name }}</a>
+                    <button class="btnRegister" onclick="window.location.href ='/register-box'"><i class="fa fa-plus"></i>Đăng kí</button>
+                    <button class="btnLogin" onclick="confirmLogout() "><i class="fas fa-sign-out-alt"></i>Đăng xuất</button>
+                </nav>
+            </header>
+        </div>
+        <div class="main-content">
+            <script>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            alert("{{ message }}");
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                document.getElementById('btnExpand').addEventListener('click', function() {
+                    const sidebar = document.getElementById('side-bar');
+                    sidebar.classList.toggle('collapsed');
+                });
+            </script>
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+
+    <script src="/static/js/customer.js"></script>
+    <script src="/static/js/logout.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

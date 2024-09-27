@@ -1,0 +1,155 @@
+{% extends 'Base.html' %}
+{% block title %}Thông tin khách hàng spa{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="../static/css/spa.css">
+<!--    Lấy thiết kế của infor-customer-->
+{% endblock %}
+{% block content %}
+    <style>
+        .hidden {
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .choice-group label {
+            display: block;
+            margin-bottom: 15px;
+            margin-right: 30px;
+        }
+        .choice-group {
+            display: flex;
+        }
+
+    </style>
+    <div class="bang">
+        <div class="search-box">
+            <form class="search-form" action="{{url_for('routes.spa_search')}}" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Nhập dữ liệu cần tìm ..." name="search" value="{{kw}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Tìm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="filter-box">
+            <form class="filter-form" action="{{url_for('routes.spa_filter')}}" method="post">
+                <div class="filter-item">
+                    <label for="payment">Thanh toán</label>
+                    <select id="payment" name="payment">
+                        <option value="">Tất cả</option>
+                        {% for payment in payment_list %}
+                            {% if payment == selected_payment %} <!-- Set giá trị mặc định của ô là giá trị vừa được chọn -->
+                                <option value="{{ payment }}" selected>{{ payment }}</option>
+                            {% else %}
+                                <option value="{{ payment }}">{{ payment }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        <!-- Thêm các lựa chọn khác tùy thuộc vào nhu cầu của bạn -->
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="price">Giá tiền</label>
+                    <select id="price" name="price">
+                        <option value="">Tất cả</option>
+                        {% for price in price_list %}
+                            {% if price == selected_price %} <!-- Set giá trị mặc định của ô là giá trị vừa được chọn -->
+                                <option value="{{ price }}" selected>{{ price }}</option>
+                            {% else %}
+                                <option value="{{ price }}">{{ price }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        <!-- Thêm các lựa chọn khác tùy thuộc vào nhu cầu của bạn -->
+                    </select>
+                </div>
+                <!-- Thêm các ô lọc khác tương tự -->
+                <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i> Áp dụng lọc</button>
+            </form>
+        </div>
+        <form id="customerForm" method="POST" action="{{ url_for('routes.handle_actions') }}">
+            <div class="action-box">
+
+                <div class="btn-normal" >
+                    <button id="createCardButton" type="button" class="btn btn-success"  onclick="window.location.href='{{ create_card_url }}'">
+                        <i class="fas fa-plus"></i> Tạo thẻ mới
+                    </button>
+                    <button id="bookingButton" type="button"  class="btn btn-success" onclick="window.location.href='/spa/booking'" >
+                        <i class="fas fa-plus"></i> Booking
+                    </button>
+                </div>
+                <div id="button-box" class="btn-box">
+                    <button id="deleteButton" type="submit" name="action" value="delete" class="btn btn-danger" onclick="return confirmDelete();" >Xóa</button>
+                    <button id="createTask" type="submit" name="action" value="createTask" class="btn btn-primary">Thêm task</button>
+                </div>
+
+            </div>
+            <table>
+                <thead>
+                    <tr class="infor" style="background: lightgray">
+                        <th class="checkbox"><input id="allCheckBox" class="checkbox-custom" type="checkbox"></th>
+                        <th>Mã khách hàng</th>
+                        <th class="name">Tên khách hàng</th>
+                        <th>Mã thẻ</th>
+<!--                        <th>Số buổi</th>-->
+                        <th>Giá tiền</th>
+                        <th>Thanh toán</th>
+                        <th>Dư nợ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for card in khach_hang %}
+                    <tr class="value" data-user-id="{{ card.customer_id }}" data-card-id="{{ card.id }}">
+                        <td><input class="eachCheckBox checkbox-custom" type="checkbox" name="selected_customers" value="{{ card.customer_id }}" ></td>
+                        <td>{{ card.customer_id }}</td>
+                        <td class="name">{{ card.ten_khach_hang }}</td>
+                        <td>{{ card.id }}</td>
+<!--                        <td>{{ card.times }}</td>-->
+                        <td>{{ "{:,}".format(card.total_price) }}</td>
+                        {% if card.debt > 0%}
+                            <td class="debt" style="background: salmon">Nợ</td>
+                        {% else %}
+                            <td class="debt">Đủ</td>
+                        {% endif %}
+                        <td>{{ "{:,}".format(card.debt) }}</td>
+                        <!-- Thêm các cột khác tùy thuộc vào cấu trúc của bảng người dùng -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+
+    </div>
+    <script>
+        function checkBtn(){
+            console.log("Submit")
+        }
+        // Hàm chọn cách báo cáo
+        function toggleReportType() {
+            var reportType = document.querySelector('input[name="reportType"]:checked').value;
+            var datePicker = document.getElementById('datePicker');
+            var monthPicker = document.getElementById('monthPicker');
+            var dateInput = document.getElementById('date');
+            var monthInput = document.getElementById('month');
+
+            if (reportType === 'day') {
+                datePicker.classList.remove('hidden');
+                monthPicker.classList.add('hidden');
+                dateInput.required = true;
+                monthInput.required = false;
+            } else if (reportType === 'month') {
+                datePicker.classList.add('hidden');
+                monthPicker.classList.remove('hidden');
+                dateInput.required = false;
+                monthInput.required = true;
+            }
+        }
+
+        function confirmDelete() {
+            return confirm('Xác nhận xóa khách hàng này?');
+        }
+    </script>
+    <script type="module" src="../static/js/spa-main.js"></script>
+<!--    <script type="module" src="../static/js/customer.js"></script>-->
+{% endblock %}
+

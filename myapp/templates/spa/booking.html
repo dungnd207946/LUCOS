@@ -1,0 +1,390 @@
+
+{% extends 'Base.html' %}
+{% block title %}Spa Booking{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="../static/css/spa-booking.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+{% block content %}
+<div class="main">
+    <div class="left-container">
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: rgba(238, 180, 50, 1);"></span>
+                <span>Khách chưa đến</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: rgba(28, 134, 238,1);"></span>
+                <span>Hoàn thành</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: rgba(153, 0, 17, 0.8);"></span>
+                <span>Khách hủy</span>
+            </div>
+        </div>
+        <div class="schedule-container">
+
+            <div class="schedule-header">
+                <h2>Booked Schedule</h2>
+                <div class="day-filter">
+                    Choose the day:
+                    <input type="date" id="schedule-date" onchange="filterScheduleByDate()">
+                </div>
+            </div >
+            <div id="table-container">
+
+            </div>
+            <!-- Add more time slots as needed -->
+        </div>
+    </div>
+
+    <div id="myModal" class="modal-detail-schedule">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    <div class="booking-container">
+        <h1>Spa Booking</h1>
+        <form id="main-form" action="{{url_for('routes.booking')}}" method="post">
+            <div id="form-wrapper">
+                <div class="form-container">
+                    <h2>Booking Details</h2>
+                    <div class="form-group customer-select">
+                        <label for="customer_id">Khách hàng:</label>
+                        <input type="text" class="form-control" id="customer_id" name="customer_id" required autocomplete="off" oninput="getSpaSuggestions(this.value)" onfocus="showAllSpaSuggestions(this.value)">
+                        <div id="suggestions" class="list-group " style="display: none;"></div>
+                    </div>
+
+                    <div class="form-group"  id="customer-card-container" style="display: none">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center;">
+                        <label for="is_new_customer">Khách hàng mới:</label>
+                        <input type="checkbox" id="is_new_customer" name="is_new_customer" style="width: 18px; height: 18px; margin-left: 10px; margin-bottom: 5px">
+                    </div>
+                    <div class="form-group" style="display: flex; justify-content: space-between">
+                        <div style="width: 40%">
+                            <label for="staff">Nhân viên:</label>
+                            <select class="form-control" id="staff" name="staff" required>
+                                <option value="" disabled selected hidden>Chọn nhân viên...</option>
+                                {% for staff in staffs %}
+                                    <option value="{{ staff.id }}">{{ staff.full_name }}</option>
+                                    <!--Thẻ option sẽ trả về giá trị của value khi submit-->
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div style="width: 40%">
+                            <label for="mask">Mặt nạ:</label>
+                            <select id="mask" name="mask" required>
+                                <option value="" disabled selected hidden>Chọn mặt nạ...</option>
+                                {% for m in mask_json %}
+                                    <option value="{{ m.id }}">{{ m.mask_name }}</option>
+                                {% endfor %}
+
+                                <!-- Add more masks as needed -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Thời gian bắt đầu:</label>
+<!--                        <input type="datetime-local" id="date" name="date" placeholder="YYYY-MM-DD HH:MM"  required>-->
+                        <input type="datetime-local" id="date" name="date" placeholder="YYYY-MM-DD HH:MM" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer_demand">Yêu cầu của khách hàng:</label>
+                        <textarea id="customer_demand" name="customer_demand" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Ghi chú:</label>
+                        <textarea id="notes" name="notes" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="btn btn-submit" type="submit" onclick="getCustomerId()">Submit Booking</button>
+            </div>
+        </form>
+    </div>
+</div>
+    <script>
+        function filterScheduleByDate() {
+            const unformattedDate = document.getElementById('schedule-date').value;
+            const selectedDate = formatDate(unformattedDate);
+
+            const staffs = {{ staff_json | tojson }}
+            const masks = {{ mask_json | tojson}}
+            generateTimeSlots(staffs).then(() => {     // Tạo bảng
+                const bookings = {{ booking | tojson }};
+                bookings.forEach(function (b) {         // Tạo lịch booking ứng với từng ngày
+                    const bookedDate = b.date.split(' ')[0];
+                    if (bookedDate === selectedDate) {
+                        console.log('Filtered booking:', b);
+                        schedule_generate(b);
+                    }
+                    else{
+                        console.log('Compare fail!')
+                    }
+
+                });
+            });
+        }
+        // Gọi lại hàm khi độ rộng màn hình thay đổi
+        const scheduleBody = document.getElementById('table-container');
+        const observer = new ResizeObserver(filterScheduleByDate);
+        observer.observe(scheduleBody);
+
+        function schedule_generate(b) {
+        // Giả định lấy giá trị từ form
+
+            let duration = b.duration
+            let treatment_name = b.treatment_name
+            let customer_name = b.customer_name;
+            let note = b.note;
+            console.log('Generated!')
+            let startTime = b.date.split(' ')[1] // Tách ngày giờ và lấy giờ
+            // const startTime = "10:00"; // Thay bằng giá trị từ form
+
+            const startHour = parseInt(startTime.split(':')[0]);
+            const startMinute = parseInt(startTime.split(':')[1]);
+
+            const startMinutes = startHour * 60 + startMinute;
+            const endMinutes = startMinutes + duration;
+
+            const scheduleBody = document.getElementById('schedule-body');
+            const rows = scheduleBody.getElementsByTagName('tr');
+
+            const panel = document.createElement('div');
+            // panel.classList.add('booking-panel');
+            panel.classList.add('booking-panel');
+
+            const content = `
+                <!-- <div class="panel-block">
+                    <label for="startTime">Thời gian:</label>
+                    <div id="startTime">${startTime}</div>
+                </div> -->
+                <div class="panel-block">
+                    <label for="treatment_name">Liệu trình:</label>
+                    <div id="treatment_name">${treatment_name}</div>
+                </div>
+                <!--<div class="panel-block">
+                    <label for="duration">Kéo dài:</label>
+                    <div id="duration">${duration} phút</div>
+                </div> -->
+                <div class="panel-block">
+                    <label for="customer_name">Khách hàng:</label>
+                    <div id="customer_name">${customer_name}</div>
+                </div>
+                <div class="panel-block">
+                    <label for="note">Lưu ý:</label>
+                    <div id="note">${note}</div>
+                </div>
+            `;
+            panel.innerHTML = content ;
+
+            // Tính toán vị trí của panel
+            for (let i = 0; i < rows.length; i++) {
+                const timeCell = rows[i].cells[0];
+                const time = timeCell.textContent;
+                const rowHour = parseInt(time.split(':')[0]);
+                const rowMinute = parseInt(time.split(':')[1]);
+
+                const rowMinutes = rowHour * 60 + rowMinute;
+
+                if (rowMinutes >= startMinutes && rowMinutes < endMinutes) {
+                    const topPosition = rows[i].offsetTop +15;
+                    const height = rows[i].offsetHeight * (duration / 15); // 15 là độ dài mỗi slot
+                    panel.style.top = `${topPosition}px`;
+                    //Tính vị trí chiều dọc của panel
+                    panel.style.height = `${height}px`;
+
+                    //Tính vị trí chiều ngang của panel, và độ rộng chiều ngang
+                    const scheduleHead = document.getElementById('schedule-head')
+                    const headRow = scheduleHead.getElementsByTagName('tr')
+                    const thElements = headRow[0].getElementsByTagName('th');
+                    for (let j = 0; j < thElements.length; j++) {
+                        if (parseInt(thElements[j].id) === parseInt(b.staff_id)) {
+                            panel.style.width = `${rows[i].cells[j].offsetWidth}px`; // Độ rộng theo cột
+                            panel.style.left = `${rows[i].cells[j].offsetLeft}px`; // Căn trái theo cột
+                            break;
+                        }
+                    }
+                    panel.style.display = 'block';
+
+                    break;
+                }
+            }
+            scheduleBody.appendChild(panel);
+
+            if (b.status === 1){
+                panel.style.backgroundColor = 'rgba(238, 180, 50, 1)'
+                // panel.style.color = 'rgba(0,83,156, 0.8)'
+                panel.style.color = '#fff'
+            }
+            else if(b.status === 2) {
+                panel.style.backgroundColor = 'rgba(28, 134, 238,1)'
+                panel.style.color = '#fff'
+            }
+            else {
+                panel.style.backgroundColor = 'rgba(153, 0, 17, 0.8)'
+                panel.style.color = '#fff'
+            }
+            // Hiển thị chi tiết booking
+            var modal = document.getElementById("myModal");
+            var span = document.getElementsByClassName("close")[0];
+
+            panel.onclick = function(event) {
+                event.stopPropagation();
+                panel.classList.add('selected');
+
+                panel.addEventListener('animationend', function() {
+                    panel.classList.remove('selected');
+                    modal.style.display = "flex";
+                }, { once: true });
+
+                // Tạo chi tiết của mỗi booking, và kiêm luôn chỉnh sửa
+                const staffs = {{ staff_json | tojson }}
+                const masks = {{ mask_json | tojson}}
+                // let startTime = b.date.split(' ')[1]
+                let parts = b.date.split(/[\s/:]+/);
+                const startTime = parts[2] + '-' + parts[1] + '-' + parts[0] + 'T' + parts[3] + ':' + parts[4];
+                let staffOptions = '';
+                staffs.forEach(function (s) {
+                    const selected = s.id === b.staff_id ? 'selected' : '';
+                    staffOptions += `<option value="${s.id}" ${selected}>${s.name}</option>`;
+                });
+
+                let maskOptions = '';
+                masks.forEach(function (m){
+                    const selected = m.id === b.mask_id ? 'selected' : '';
+                    maskOptions += `<option value="${m.id}" ${selected}>${m.mask_name}`
+                })
+
+                const modalContent = `
+                    <form method="post" action="/spa/update-booking/${b.id}">
+                        <div class="panel-block">
+                            <label for="staff">Nhân viên:</label>
+                            <select name="staff_modal" id="staff">
+                                ${staffOptions}
+                            </select>
+                        </div>
+                        <div class="panel-block">
+                            <label for="customer_name">Khách hàng:</label>
+                            <div id="customer_name">${b.customer_name}</div>
+                        </div>
+                        <div class="panel-block">
+                            <label for="is_new_customer_modal">Khách hàng mới: </label>
+                            <span class="icon-check" ${String(b.is_new_customer) == 'true' ? 'style="display: inline;"' : 'style="display: none;"'} ><i class="fas fa-check checkmark"></i></span>
+                            <span class="icon-cross" ${String(b.is_new_customer) == 'true' ? 'style="display: none;"' : 'style="display: inline;"'} ><i class="fas fa-times icon cross"></i></span>
+                        </div>
+                        <div class="panel-block">
+                            <label for="date_modal">Thời gian:</label>
+                        <!--    <div id="startTime">${startTime}</div> -->
+                            <input type="datetime-local" id="date_modal" name="date_modal" value="${startTime}" >
+                        </div>
+                        <div class="panel-block">
+                            <label for="treatment_name">Liệu trình:</label>
+                            <div id="treatment_name">${b.treatment_name}</div>
+                        </div>
+                        <div class="panel-block">
+                            <label for="duration">Kéo dài:</label>
+                            <div id="duration">${b.duration} phút</div>
+                        </div>
+                        <div class="panel-block">
+                            <label for="mask">Mặt nạ:</label>
+                            <select id="mask" name="mask_modal">
+                                ${maskOptions}
+                            </select>
+                        </div>
+                        <div class="panel-block">
+                            <label for="note">Lưu ý:</label>
+                            <textarea id="note" name="note_modal">${b.note}</textarea>
+                        </div>
+                        <div class="panel-block">
+                            <label for="customer_demand">Yêu cầu của khách hàng:</label>
+                            <textarea id="customer_demand" name="customer_demand_modal">${b.customer_demand}</textarea>
+                        </div>
+                        <div class="panel-block">
+                            <div class="status-container">
+                                <label class="" for="status_1">Khách chưa đến:</label>
+                                <input type="radio" class="status-checkbox" id="status_1" name="status_modal_${b.id}" value="1">
+                            </div>
+                            <div class="status-container">
+                                <label class="" for="status_2">Hoàn thành:</label>
+                                <input type="radio" class="status-checkbox" id="status_2" name="status_modal_${b.id}" value="2">
+                            </div>
+                            <div class="status-container">
+                                <label class="" for="status_3">Khách hủy:</label>
+                                <input type="radio" class="status-checkbox" id="status_3" name="status_modal_${b.id}" value="3">
+                            </div>
+                        </div>
+                        <div class="panel-block">
+
+                                <button class="btn btn-success save-booking" onclick="return confirmUpdate()">Lưu
+                                    <i class="bi bi-save"></i>
+                                </button>
+                    </form>      <!-- Tôi đang để thẻ div lồng giữa thẻ form -->
+                            <form method="POST" action="/spa/delete-booking/${b.id}">
+                                <button type="submit" class="btn btn-danger" onclick="return confirmDelete()">Xóa
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        `;
+                document.getElementById('modal-body').innerHTML = modalContent;
+
+                // Chỉnh giá trị mặc định của status
+                var status_name = "status_modal_" + b.id;
+                var radios = document.querySelectorAll('input[name="' + status_name + '"]');
+                radios.forEach(function(radio) {
+                    if (parseInt(radio.value) === parseInt(b.status)) {
+                        console.log("Database: "+ radio.value + " " + radio.checked)
+                        console.log("Radio: " + radio.name)
+                        // Nếu giá trị của radio button trùng với b.status, thiết lập thuộc tính checked
+                        radio.checked = true;
+                        console.log("Database: "+ radio.value + " " + radio.checked)
+                    }
+                });
+
+                 // Tạo đồng hồ custom
+                flatpickr("#date_modal", {
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    time_24hr: true,
+                    minuteIncrement: 15,
+                    minTime: "09:00",
+                    maxTime: "19:00",
+                    defaultDate: b.date
+                });
+            };
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+        }
+        function confirmUpdate() {
+            return confirm('Xác nhận thay đổi thông tin đặt lịch?');
+        }
+        function confirmDelete() {
+            return confirm('Xác nhận xóa thông tin đặt lịch này?');
+        }
+
+
+
+    </script>
+    <script src="/static/js/booking.js"></script>
+    <script src="/static/js/create-task.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Initialize Flatpickr on the datetime-local input
+        flatpickr("#date", {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            time_24hr: true,
+            minuteIncrement: 15,
+            minTime: "09:00",
+            maxTime: "19:00"
+        });
+
+
+    </script>
+{% endblock %}

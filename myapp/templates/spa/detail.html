@@ -1,0 +1,182 @@
+{% extends 'Base.html' %}
+{% block title %}Detail Spa Customer{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/spa-booking.css">
+    <link rel="stylesheet" href="/static/css/spa-detail.css">
+{% endblock %}
+{% block content %}
+<div class="main-detail">
+    <div class="back">
+        <i class="fa fa-angle-left"></i><a href="/spa ">Quay lại thông tin spa</a>
+    </div>
+    <div class="card mt-5 infor-customer">
+        <div class="card-header">
+            <h3>Thông Tin Khách Hàng</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Tên: </strong><a target="_blank" href="/khach-hang/infor-khach-hang/{{customer.id}}" style="text-decoration: none">{{ customer.ten_khach_hang }}</a> </p>
+            <p><strong>Số điện thoại: </strong> {{ customer.so_dien_thoai }}</p>
+            <p><strong>Tình trạng da: </strong> {{ customer.skin_property }}</p>
+        </div>
+    </div>
+
+    <h4 class="mt-5">Liệu Trình</h4>
+    <div class="row">
+        {% for treatment in treatments %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ treatment.name }}</h5>
+                    <p><strong>Số buổi:</strong> {{ treatment.total_time }}</p>
+                    <p><strong>Số buổi đã sử dụng:</strong> {{ treatment.time_used }}</p>
+                    <p><strong>Giá tiền:</strong> {{ "{:,}".format(treatment.price) }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="container mt-5">
+    <!-- Title -->
+        <div class="text-center mb-4">
+            <h4 class="font-weight-bold">Thông tin thẻ chi tiết</h4>
+        </div>
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Mã thẻ</th>
+                        <th>Liệu trình</th>
+                        <th>Số buổi sử dụng / Tổng số buổi</th>
+                        <th>Giá tiền</th>
+                        <th>Tổng giá trị</th>
+                        <th>Đã thanh toán</th>
+                        <th>Nợ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in staff_report%}
+                    <tr>
+                        <td>{{s.staff_name}}</td>
+                        <td>{{s.new_customers_count}}</td>
+                        <td>{{s.completed_bookings_count}}</td>
+                        <td>{{"{:,}".format(s.total_staff_money)}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-5">
+        <div class="card-header">
+            <h3>Thông Tin Thanh Toán</h3>
+        </div>
+        <div class="card-body payment">
+            <p><strong>Tổng tiền:</strong> {{ "{:,}".format(card.total_price) }}</p>
+            <p><strong>Số tiền đã thanh toán:</strong> {{ "{:,}".format(card.paid) }}</p>
+            <div class="debt">
+                <p><strong>Dư nợ:</strong> {{ "{:,}".format(card.debt) }} </p>
+                <button class="btn btn-success" onclick="updatePayment()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-5">
+        <div class="card-header">
+            <h3>Lịch Sử Spa</h3>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                {% for history in booking %}
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <p><strong>Ngày:</strong> {{ history.date }}</p>
+                                <p><strong>Liệu Trình Sử Dụng:</strong> {{ history.name }}</p>
+                                {% if history.status == 1 %}
+                                    <p><strong>Trạng thái: </strong>Chưa đến</p>
+                                {% elif history.status == 2 %}
+                                    <p><strong>Trạng thái: </strong>Hoàn thành</p>
+                                {% else %}
+                                    <p><strong>Trạng thái: </strong>Hủy lịch</p>
+                                {% endif %}
+                            </div>
+                            <a href="#" class="view-details-link">Xem chi tiết &gt;</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div id="myModal" class="modal-payment">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+</div>
+<script>
+    function updatePayment(){
+        console.log('UpdatePayment')
+        var modal = document.getElementById("myModal");
+        var span = document.getElementsByClassName("close")[0];
+        modal.style.display = "flex";
+        const modal_infor = {{ update_modal | tojson}}
+        modal_infor.forEach(function (c){
+            const modalContent = `
+                <form method="post" action="/spa/update-card/${c.card_id}">
+                    <div class="panel-block">
+                        <label for="customer_name_modal">Khách hàng:</label>
+                        <div id="customer_name_modal">${c.customer_name}</div>
+                    </div>
+                    <div class="panel-block">
+                        <label for="customer_name_modal">Mã số thẻ:</label>
+                        <div id="customer_name_modal">${c.card_id}</div>
+                    </div>
+                    <div class="panel-block">
+                        <label for="total_price_modal">Tổng tiền:</label>
+                        <input id="total_price_modal" value="${c.total_price}">
+                    </div>
+                    <div class="panel-block">
+                        <label for="paid_modal">Đã thanh toán:</label>
+                        <input type="number" id="paid_modal" name="paid_modal" value="${c.paid}" oninput="calculateDebt()">
+                    </div>
+                    <div class="panel-block">
+                        <label for="debt_modal">Nợ:</label>
+                        <input type="number" id="debt_modal" name="debt_modal" value="${c.debt}" readonly>
+                    </div>
+                    <div class="panel-block">
+                        <button class="btn btn-success update" onclick="return confirmUpdate()">Lưu
+                            <i class="bi bi-save"></i>
+                        </button>
+                    </div>
+                </form>
+            `
+            document.getElementById('modal-body').innerHTML = modalContent;
+        })
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+    }
+
+    function calculateDebt() {
+        const total_price = parseFloat(document.getElementById('total_price_modal').value);
+        const paid = parseFloat(document.getElementById('paid_modal').value);
+        var debt = total_price - paid;
+        if(debt<0){
+            debt = 0
+        }
+        document.getElementById('debt_modal').value = debt;
+    }
+
+    function confirmUpdate() {
+        return confirm('Xác nhận thanh toán?');
+    }
+</script>
+<script src="/static/js/create-task.js"></script>
+<script src="/static/js/spa/detail.js"></script>
+{% endblock %}

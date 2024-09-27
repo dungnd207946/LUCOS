@@ -1,0 +1,191 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+header {
+    background-color: #002b5c;
+    padding: 15px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    width: 120px;
+    height: 48px;
+}
+.logo img {
+    width: 120px;
+    height: 48px;
+}
+nav {
+    display: flex;
+    align-items: center;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+.btnLogin {
+    background-color: #f8b400;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-left: 15px;
+}
+.btnLogin:hover {
+    background-color: #f39c12;
+}
+.hero {
+    background-image: url('https://www.sapo.vn/Themes/Portal/Default/StylesV2/images/home/price/bg-banner.png?v=2');
+    background-size: cover;
+    background-position: center;
+    color: #00355d;;
+    padding: 100px 20px;
+    text-align: center;
+}
+.hero .btnStart {
+    color: #000;
+    background: linear-gradient(272.65deg, #0cceb0 20.05%, #2ad38b 84.62%);
+    border-radius: 50px;
+    width: 280px;
+    height: 57px;
+    display: inline-flex;
+    align-items: center;
+    -webkit-user-select: none;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    white-space: nowrap;
+    font-size: 23px;
+    transition: opacity .5s ease;
+    font-weight: 600 !important;
+    z-index: 1;
+    overflow: hidden;
+    padding-left: 0;
+    position: relative;
+    justify-content: center;
+    padding: 0 30px;
+    outline: 0;
+    text-decoration: none;
+    line-height: 48px;
+    transition: opacity 0.5s ease;
+}
+.hero .btnStart .icon {
+    width: 41px;
+    height: 41px;
+    border-radius: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .3s ease-in-out;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #fff;
+}
+.hero .btnStart .icon img{
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    vertical-align: middle;
+
+}
+.btnStart::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(0, 0, 0, 0.3); /* Màu nền của hiệu ứng fade */
+    transition: opacity 0.5s ease;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+.btnStart:hover::after {
+    opacity: 0.5;
+}
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+.hero p {
+    font-size: 24px;
+    margin-bottom: 40px;
+}
+.section {
+    padding: 50px 20px;
+    text-align: center;
+    background: white;
+}
+.section h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+.section p {
+    font-size: 18px;
+    margin-bottom: 60px;
+}
+.features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+}
+.feature {
+    background-color: #f0f7ff;
+    padding: 20px;
+    border-radius: 22px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 25%;
+    margin: 15px 0;
+    text-align: center;
+}
+.feature-icon {
+    background-color: #00a2ff;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    margin-top: -50px;
+}
+.feature-icon img {
+    width: 120px;
+    height: 120px;
+}
+.feature h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.feature p {
+    font-size: 16px;
+    color: #555;
+}
+footer {
+    background-color: #002b5c;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 60px;
+}
+footer p {
+    margin: 0;
+    font-size: 14px;
+}

@@ -1,0 +1,68 @@
+{% extends 'Base.html' %}
+{% block title %}Thêm Task{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/task.css">
+    <link rel="stylesheet" href="/static/css/create-task.css">
+    <style>
+        .form-container {
+            max-width: 500px; /* Điều chỉnh chiều rộng của form */
+            min-width: 500px;
+            margin: 0 auto;
+        }
+        /*.form-control {*/
+        /*    min-height: 100px; !* Điều chỉnh chiều cao của ô nhập liệu *!*/
+        /*}*/
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container my-4 p-4 bg-light rounded shadow-sm form-container">
+        <h3 class="text-primary mb-4 text-center">Thêm Task</h3>
+        <form action="{{url_for('routes.create_multi_task')}}" method="post">
+
+            <div class="form-group">
+                <label for="staff">Nhân viên</label>
+                <select class="form-control" id="staff" name="staff">
+                    {% for staff in staffs %}
+                        <option value="{{ staff.id }}">{{ staff.full_name }}</option>
+                        <!--Thẻ option sẽ trả về giá trị của value khi submit-->
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" id="existing_task_div">
+                <label for="existing_task">Task</label>
+                <select class="form-control" id="existing_task" name="existing_task" required onchange="toggleTaskInput()">
+                    <option value="" disabled selected>Chọn task... </option>
+                    {% for task in existing_tasks %}
+                            <option value="{{ task.id }}">{{ task.description }}</option>
+                            <!--Thẻ option sẽ trả về giá trị của value khi submit-->
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" id="new_task_div" style="display: none;">
+                <label for="new_task">Mô tả</label>
+                <textarea class="form-control" id="new_task" name="new_task" style="min-height: 75px"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="deadline">Deadline</label>
+                <input type="datetime-local" class="form-control" id="deadline" name="deadline" placeholder="YYYY-MM-DD HH:MM" required>
+            </div>
+            <div class="form-group">
+                <label for="priority">Mức độ ưu tiên</label>
+                <select class="form-control" id="priority" name="priority">
+                    {% for i in range(1, 6) %}
+                        <option value="{{i}}">{{i}}</option>
+                        <!--Thẻ option sẽ trả về giá trị của value khi submit-->
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="new_task">Ghi chú</label>
+                <textarea class="form-control" id="note" name="note" style="min-height: 75px"></textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" onclick="getCustomerId()">Thêm Task</button>
+            </div>
+        </form>
+    </div>
+    <script src="/static/js/create-task.js"></script>
+{% endblock %}

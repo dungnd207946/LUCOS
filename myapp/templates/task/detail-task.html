@@ -1,0 +1,65 @@
+{% extends 'Base.html' %}
+{% block title %}Task Detail{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/task-detail.css">
+{% endblock %}
+{% block content %}
+<div class="container">
+        <div class="customer-name" style="font-size: 2rem">{{ customer.ten_khach_hang }}</div>
+        <table class="table table-striped task-table">
+            <thead class="thead-dark">
+                <tr>
+                    <th class="task-id" scope="col">#</th>
+                    <th class="description" scope="col">Mô tả</th>
+                    <th scope="col">Thời hạn</th>
+                    <th scope="col">Mức độ ưu tiên</th>
+                    <th scope="col">Đã hoàn thành</th>
+                    <th scope="col">Ghi chú</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in details %}
+                    <tr class="{% if task.finished %}finished{% endif %}">  <!--Nếu task đã finish thì class này = 'finished', còn không thì class không có tên-->
+                        <th class="task-id" scope="row">{{ loop.index }}</th>
+                        {% if task.task_id == 1 %}
+                            <td class="description">{{ task.extra_description }}</td>
+                        {% else %}
+                            <td class="description">{{ task.description }}</td>
+                        {% endif %}
+                        <td>{{ task.deadline }}</td>
+                        <td class="priority">{{ task.priority }}</td>
+                        <td class="finish-icon">
+                            {% if task.finished %}
+                                <i class="fas fa-check-circle text-success"></i>
+                            {% else %}
+                                <i class="fas fa-times-circle text-danger"></i>
+                            {% endif %}
+                        </td>
+                        <td class="note">{{ task.note }}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="window.location.href='/task/update-task/{{task.customer_id}}/{{task.staff_id}}/{{task.task_id}}/{{task.id}}'">
+                                <i class="fas fa-edit"></i></button>
+
+                            <!--Form để thực hiện xóa task-->
+                            <form method="POST" action="{{ url_for('routes.delete_task', customer_id=task.customer_id, staff_id=task.staff_id, id=task.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirmDelete()">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+    function confirmDelete() {
+        return confirm('Bạn có chắc chắn muốn xóa task này không?');
+    }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'Base.html' %}
+{% block title %}Thông tin khách hàng{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="../../static/css/infor-customer.css">
+{% endblock %}
+{% block content %}
+    <div class="bang">
+        <div class="search-box">
+            <form class="search-form" action="#">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Nhập dữ liệu cần tìm ..." name="search" value="{{kw}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Tìm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="filter-box">
+            <form class="filter-form" action="{{url_for('routes.infor_khach_hang')}}" method="post">
+                <div class="filter-item">
+                    <label for="address">Địa chỉ:</label>
+                    <select id="address" name="khu_vuc">
+                        <option value="">Tất cả</option>
+                        {% for khu_vuc in khu_vuc_list_sorted %}
+                            {% if khu_vuc == selected_khu_vuc %} <!-- Set giá trị mặc định của ô là giá trị vừa được chọn -->
+                                <option value="{{ khu_vuc }}" selected>{{ khu_vuc }}</option>
+                            {% else %}
+                                <option value="{{ khu_vuc }}">{{ khu_vuc }}</option>
+                            {% endif %}
+                        {% endfor %}
+                        <!-- Thêm các lựa chọn khác tùy thuộc vào nhu cầu của bạn -->
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="group">Nhóm khách hàng:</label>
+                    <select id="group" name="nhom_khach_hang">
+                        <option value="">Tất cả</option>
+                        {% for group in nhom_kh_list_sorted %}
+                            {% if group == selected_nhom_khach_hang %}
+                                <option value="{{ group }}" selected>{{ group }}</option>
+                            {% else %}
+                                <option value="{{ group }}">{{ group }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i> Áp dụng lọc</button>
+            </form>
+        </div>
+        <form id="customerForm" method="POST" action="{{ url_for('routes.handle_actions') }}">
+            <div class="action-box" style="padding-bottom: 10px">
+                <button type="button" class="btn btn-default"><i class="bi bi-three-dots-vertical"></i></button>
+                <div id="button-box" class="btn-box" style="display: none;">
+                    <button id="deleteButton" type="submit" name="action" value="delete" class="btn btn-danger" onclick="return confirmDelete()" >Xóa</button>
+                    <button id="createTask" type="submit" name="action" value="createTask" class="btn btn-primary">Thêm task</button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr class="infor">
+                        <th class="checkbox">
+                            <input id="allCheckBox" class="checkbox-custom" type="checkbox"><!-- Sự kiện checkbox đươc viết trong js-->
+                        </th>
+                        <th class="id">Mã khách hàng</th>
+                        <th class="name">Tên khách hàng</th>
+                        <th>Số điện thoại</th>
+                        <th>Nhóm khách hàng</th>
+                        <th>Khu vực</th>
+                        <th>Điểm tích lũy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in khach_hang %}
+                    <tr class="value" data-user-id="{{ user.id }}">
+                        <td>
+                            <input class="eachCheckBox checkbox-custom" type="checkbox" name="selected_customers" value="{{ user.id }}">
+                        </td>
+                        <td class="id-value">{{ user.id }}</td>
+                        <td class="name">{{ user.ten_khach_hang }}</td>
+                        <td>{{ user.so_dien_thoai }}</td>
+                        <td>{{ user.nhom_khach_hang }}</td>
+                        <td>{{ user.khu_vuc }}</td>
+                        <td>{{ user.point }}</td>
+                        <!-- Thêm các cột khác tùy thuộc vào cấu trúc của bảng người dùng -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <script>
+        function confirmDelete() {
+            return confirm('Xác nhận xóa khách hàng này?');
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module" src="../../static/js/customer.js"></script>
+{% endblock %}
+

@@ -1,0 +1,145 @@
+.side-bar .navigation .btnSpa {
+    background: #fff;
+    color: #333;
+}
+.main-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    position: relative;  /* Để định nghĩa absolute ở phần tử con*/
+    padding: 20px;
+    /*margin-top: 3rem;*/
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 900px;
+    /*min-height: 400px;*/
+    overflow: hidden; /* Ensure content doesn't overflow the card */
+
+}
+.background-opacity {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("../images/card-background.jpg") no-repeat center;
+    background-size: cover;
+    opacity: 1; /* Adjust the opacity as needed */
+    z-index: 0;
+}
+.card-content {
+    /*position: relative;*/
+    z-index: 1;
+}
+.card h2 {
+    margin: 0 0 20px;
+    font-size: 30px;
+    text-align: center;
+    color: #d9534f;
+    font-weight: bold;
+}
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    width: 60%;
+}
+.form-group label {
+    width: 35%;
+    align-self: center;
+    color: black;
+    font-weight: bold;
+}
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width: 60%;
+    padding: 8px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background: transparent;
+}
+
+
+.form-group input[type="number"] {
+    -moz-appearance: textfield;
+}
+.form-group input[type="number"]::-webkit-outer-spin-button,
+.form-group input[type="number"]::-webkit-inner-spin-button {
+    /*-webkit-appearance: none;*/
+    margin: 0;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.treatment-container{
+    /*border: 2px solid white;*/
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    padding: 10px;
+    width: 60%;
+    margin-bottom: 10px;
+}
+.treatment-container .form-group{
+    width: 100%;
+}
+.close-btn {
+    background-color: transparent;
+    color: black;
+    /*border: 2px solid black;*/
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    align-content: center;
+    justify-content: center;
+}
+.close-btn:hover {
+    /*color: #333;*/
+    background: lightgray;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    width: 32%
+
+}
+.grid-item {
+    border: 1px solid gray;
+    border-radius: 4px;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+
+}
+
+#suggestions {
+    left: 25%;
+    top: 7.3rem;
+    max-height: 200px; /* Chiều cao tối đa của danh sách gợi ý */
+    overflow-y: auto; /* Hiển thị thanh cuộn nếu nội dung quá dài */
+    position: absolute;
+    width: 19.6rem; /* 2px để cân chỉnh với border của input */
+    border: 1px solid #ced4da; /* Border giống với input */
+    border-radius: 0 0 .25rem .25rem; /* Bo tròn các góc */
+    /*background-color: #fff; !* Màu nền trắng *!*/
+    z-index: 100; /* Đảm bảo danh sách gợi ý hiển thị trên cùng */
+    background: transparent;
+}
+
+#suggestions a {
+    cursor: pointer; /* Biến con trỏ thành pointer khi di chuột qua các gợi ý */
+}

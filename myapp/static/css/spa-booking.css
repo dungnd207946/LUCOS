@@ -1,0 +1,347 @@
+.side-bar .navigation .btnSpa {
+    background: #fff;
+    color: #333;
+}
+.main{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 1.5rem;
+}
+.left-container{
+    width: 1000px;
+}
+.schedule-container {
+    top: 5rem;
+    left: 288px;
+    margin-top: 10px;
+    background: white;
+    min-width: 600px;
+
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 80vh;
+
+}
+.legend {
+    display: flex;
+    /*flex-direction: column;*/
+    margin-top: 15px;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-right: 25px;
+}
+.legend-color {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 3px;
+}
+.schedule-header{
+    display: flex;
+    justify-content: space-between;
+}
+.schedule-header .day-filter{
+    display: flex;
+    justify-content: center;   /* Căn giữa ngang*/
+    align-items: center;       /* Căn giữa dọc*/
+}
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+.schedule-table th, .schedule-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+.schedule-table th {
+    background-color: #f4f4f4;
+}
+.time-slot {
+    background-color: lightgray;
+}
+.booking-container {
+    /*position: sticky;*/
+    /*min-width: 400px;*/
+    width: 450px;
+    overflow-y: auto;
+    max-height: 85vh;
+}
+.booking-container::-webkit-scrollbar {
+    display: none;
+}
+.form-container {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+    max-width: 600px;
+}
+.form-container h2 {
+    margin-top: 0;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.form-group textarea {
+    resize: vertical;
+}
+.form-group select{
+    height: auto;
+}
+.form-group select option {
+    padding: 10px;
+}
+.form-group .card {
+    border: 2px solid black;
+    margin-top: 10px;
+    padding: 10px;
+}
+.treatment-line{
+    display: flex;
+    align-items: center;
+}
+.treatment-line .treatment-detail{
+    width: 60%;
+}
+.treatment-line .treatment-name{
+    width: 30%;
+}
+.treatment-line .select-treatment {
+    /*width: 10%;*/
+    width: 10px;
+    height: 10px;
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.buttons button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+.buttons .btn-add {
+    background-color: #28a745;
+    color: white;
+}
+.buttons .btn-submit {
+    background-color: #007bff;
+    color: white;
+}
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #fff;
+    color: black;
+    /*border: 2px solid black;*/
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    cursor: pointer;
+    align-content: center;
+    justify-content: center;
+}
+.close-btn:hover {
+    /*color: #333;*/
+    background: lightgray;
+}
+
+/*Test schedule*/
+.schedule-table {
+    position: relative;
+}
+.schedule-body{
+    position: relative;
+}
+.booking-panel {
+    position: absolute;
+    background-color: rgba(28, 134, 238, 0.8); /* Màu nền và độ mờ */
+    /*border: 1px solid red;*/
+    z-index: 101; /* Đảm bảo panel nổi lên trên */
+    display: none; /* Ẩn panel mặc định */
+    border-radius: 10px;
+    font-size: 12px;
+    padding: 10px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.booking-panel .panel-block{
+    /*display: flex;*/
+    margin-bottom: 0.1rem;
+}
+.booking-panel label{
+    font-weight: bold;
+    /*text-shadow: 1px 1px 1px black;*/
+    margin-bottom: 0;
+}
+@keyframes blink {
+    0% { background-color: lightblue; }
+    50% { background-color: lightgray; }
+    /*100% { background-color: lightblue; }*/
+}
+#table-container .selected {
+    animation: blink 0.2s linear;
+}
+.customer-select{
+    position: relative;
+}
+#suggestions {
+    /*left: 23.8%;*/
+    /*top: 6rem;*/
+    max-height: 200px; /* Chiều cao tối đa của danh sách gợi ý */
+    overflow-y: auto; /* Hiển thị thanh cuộn nếu nội dung quá dài */
+    position: absolute;
+    width: 100%;
+    border: 1px solid #ced4da; /* Border giống với input */
+    border-radius: 0 0 .25rem .25rem; /* Bo tròn các góc */
+    /*background-color: #fff; !* Màu nền trắng *!*/
+    z-index: 100; /* Đảm bảo danh sách gợi ý hiển thị trên cùng */
+    background: transparent;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+#suggestions a {
+    cursor: pointer; /* Biến con trỏ thành pointer khi di chuột qua các gợi ý */
+}
+
+#suggestions a:hover{
+    background: #e9f3ff;
+}
+
+#customer-card-container{
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*justify-content: space-between;*/
+}
+
+.custom-control-label {
+    display: inline-block;
+    padding: 10px; /* Tăng vùng click bằng cách thêm padding */
+    cursor: pointer; /* Thay đổi con trỏ khi di chuột vào */
+}
+
+.custom-control .custom-checkbox .custom-control-inline {
+    display: flex;
+    align-items: center; /* Canh giữa theo chiều dọc */
+}
+
+/* Đặt độ rộng cho cột đầu tiên (Time) */
+.schedule-table .time-header,
+.schedule-table .time-cell {
+    width: 80px; /* Đặt độ rộng tùy ý cho cột Time */
+}
+
+/* Đặt độ rộng cho các cột còn lại (Staff) */
+.schedule-table .staff-header,
+.schedule-table .staff-cell {
+    width: 120px; /* Đặt độ rộng tùy ý cho các cột Staff */
+}
+
+.modal-detail-schedule {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed; /* Định vị cố định */
+    z-index: 101; /* Đặt trước mọi nội dung khác */
+    left: 0;
+    top: 0;
+    width: 100%; /* Toàn màn hình */
+    height: 100vh; /* Toàn màn hình */
+    overflow: auto; /* Cho phép cuộn nếu nội dung quá lớn */
+    background-color: rgb(0,0,0); /* Màu nền tối */
+    background-color: rgba(0,0,0,0.4); /* Màu nền tối với độ trong suốt */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Phong cách cho nội dung modal */
+.modal-content {
+    display: flex;
+    justify-content: center;
+    background-color: #fefefe;
+    /*margin: 15% auto; !* 15% từ trên và dưới và canh giữa *!*/
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40rem; /* Độ rộng modal */
+}
+
+/* Phong cách cho nút đóng */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    width: 40px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content .panel-block{
+    display: flex;
+    padding: 10px;
+    align-items: center;
+}
+.modal-content .panel-block .icon-check {
+    color: green;
+}
+.modal-content .panel-block .icon-cross {
+    color: red;
+}
+.modal-content .panel-block span i::before {
+    font-size: 20px;
+    /*color: #0cc2ed;*/
+}
+.modal-content label{
+    font-weight: bold;
+    width: 120px;
+    margin-bottom: 0;
+}
+.status-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 50px;
+}
+.status-container label{
+    width: 100%
+}
+.status-checkbox{
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-bottom: 6px;
+    margin-left: 5px;
+}
+
+.save-booking {
+    margin-right: 20px;
+}

@@ -1,0 +1,223 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /*background: url("../images/mountain-background.jpg") no-repeat;*/
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(211, 211, 211, 0.5); !important;
+}
+.side-bar {
+    position: fixed; /* Làm cho side-bar có vị trí cố định với màn hình chứ không sắp xếp theo layout */
+    width: 230px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    padding: 1.5rem 1.5rem;
+    z-index: 102;
+    background: linear-gradient(to bottom, #1CB5E0, #000046);
+    transition: width 0.3s;
+}
+.side-bar .logo {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #fff;
+}
+.side-bar .navigation button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 50px;
+    background:transparent;
+    border: 1.5px solid #fff;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 500;
+    margin-top: 20px;
+    transition: 0.5s;
+}
+.side-bar button:hover{
+    background: #fff;
+    color: #333;
+}
+.side-bar button i {
+    width: 20px;
+    margin-right: 12px; /* Adjust spacing between icon and text */
+    margin-left: 10px;
+}
+
+.side-bar .menuExpand {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.side-bar .menuExpand button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:transparent;
+    border: none;
+    /*position: absolute;*/
+    /*right: 10px;*/
+    width: 40px; /* Đặt kích thước button */
+    height: 40px;
+    padding: 0;
+}
+
+.side-bar .menuExpand button i {
+    color: white;
+    font-size: 24px;
+    /*padding: 0.5rem;*/
+}
+.side-bar .menuExpand button:hover{
+    cursor: pointer;
+}
+
+/*Thu nhỏ cột side bar*/
+.side-bar.collapsed {
+    width: 60px; /* Kích thước khi thu nhỏ */
+    padding: 1.5rem 0;
+}
+.side-bar.collapsed .menuExpand button {
+    position: absolute;
+    left: 10px;
+}
+.side-bar.collapsed span {
+    display: none; /* Ẩn văn bản khi thu nhỏ */
+}
+.side-bar.collapsed .navigation button {
+    border: none;
+    justify-content: center;
+}
+.side-bar.collapsed .navigation button i {
+    /*margin-right: 0;*/
+    /*margin-left: 0;*/
+}
+
+.side-bar.collapsed ~ .screen {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+}
+.screen{
+    display: flex;
+    flex-direction: column;
+    top: 80px;
+    width: calc(100% - 230px);
+    margin-left: 230px;
+    min-height: 100vh;
+    background-color: rgb(240, 241, 241);
+    /*transition: margin-left 0.3s ease;*/
+}
+.top-bar {
+    position: sticky;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 80px;
+    padding: 10px 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 98;
+    background: white;
+    border: 2px solid rgba(255, 255, 255, .2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+.top-bar .navigation{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.top-bar header .navigation a {
+    position: relative;
+    font-size: 1em;
+    color: #333333;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+.top-bar .username {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.top-bar .user-avatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%; /* Tạo hình tròn */
+    background-color: #FD5100; /* Màu nền của vòng tròn */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    /*border: 2px solid black;*/
+}
+.top-bar .username i{
+    color: #fff;
+}
+.top-bar header .navigation .username {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.top-bar header .navigation a::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: #333;
+    border-radius: 5px;
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+.top-bar header .navigation a:hover::after{
+    transform: scaleX(1);
+}
+.top-bar header button {
+    width: 100px;
+    height: 45px;
+    background:transparent;
+    border: 2px solid #333;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+    margin-left: 40px;
+    transition: 0.5s;
+    padding: 0;
+}
+
+.top-bar header button:hover{
+    background: #333;
+    color: #fff;
+}
+.top-bar header button i{
+    margin-right: 4px;
+}
+.wellcome-img{
+    position: fixed;
+    bottom: 10%;
+    right: 17%;
+    z-index: 99;
+    width: 50%;
+    height: 70%;
+}
+.main-content{
+   min-height: calc(100vh - 80px) ;
+}
+
+/* Media Queries */

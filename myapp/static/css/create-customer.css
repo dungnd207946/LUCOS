@@ -1,0 +1,47 @@
+
+.side-bar .navigation .btnAdd {
+    background: #fff;
+    color: #333;
+}
+
+
+.create {
+    background: white;
+    border: 2px solid rgba(255, 255, 255, .2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    color: #333;
+    border-radius: 10px;
+    padding: 30px 40px;
+    max-width: 600px;
+    margin-top: 100px!important;
+}
+
+h1 {
+    text-align: center;
+    color: dodgerblue;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    width: 10em;
+    height: 2.5rem;
+    background: cadetblue;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+/* nút submit*/
+.btn:hover {
+    background-color: lightseagreen;
+}

@@ -1,0 +1,66 @@
+{% extends 'Base.html' %}
+{% block title %}Thông tin khách hàng{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/task.css">
+{% endblock %}
+{% block content %}
+    <div class="filter-box">
+        <form class="filter-form" action="{{url_for('routes.task')}}" method="post">
+            {% if current_user.user_role == 'ADMIN' %}
+            <div class="filter-item">
+                <label for="staffs">Nhân viên:</label>
+                <select id="staffs" name="staff">
+                    <option value="">Tất cả</option>
+                    {% for staff in staffs %}
+                        {% if staff.id|string == selected_staff %} <!-- Set giá trị mặc định của ô là giá trị được chọn -->
+                            <option value="{{ staff.id }}" selected >{{ staff.full_name }}</option>
+                        {% else %}
+                            <option value="{{ staff.id }}">{{ staff.full_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <button class="btn btn-primary" type="submit">Áp dụng lọc</button>
+        </form>
+    </div>
+
+    <div class="show-task my-4 p-4 bg-light rounded shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="text-primary">Thông tin khách hàng đang có task</h3>
+            <!-- Nút để thêm task mới -->
+            <button type="button" class="btn btn-success" onclick="window.location.href='{{ create_task_url }}'">
+                <i class="fas fa-plus"></i> Thêm Task
+            </button>
+        </div>
+        <table class="table table-hover table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Mã khách hàng</th>
+                    <th>Tên khách hàng</th>
+                    {% if current_user.user_role == 'ADMIN' %}
+                    <th>Nhân viên phụ trách</th>
+                    {% endif %}
+                    <th>Số lượng task</th>
+                    <th>Deadline gần nhất</th>
+                    <th>Mức độ ưu tiên</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in tables %}
+                <tr onclick="show_detail('{{ user.customer_id }}', '{{ user.staff_id}}')">
+                    <th>{{ user.customer_id }}</th>
+                    <td>{{ user.ten_khach_hang }}</td>
+                    {% if current_user.user_role == 'ADMIN' %}
+                    <td>{{ user.staff_name }}</td>
+                    {% endif %}
+                    <td class="luong-task">{{ user.number_of_task }}</td>
+                    <td>{{ user.closest_deadline.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{{ user.priority }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="/static/js/task.js"></script>
+{% endblock %}

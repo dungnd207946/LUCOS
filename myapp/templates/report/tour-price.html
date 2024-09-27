@@ -1,0 +1,52 @@
+{% extends 'Base.html' %}
+{% block title %}Tiền tour theo nhân viên{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/report/tour-price.css">
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <!-- Title -->
+    <div class="text-center mb-4">
+        <h4 class="font-weight-bold">Báo cáo tiền tour theo nhân viên</h4>
+    </div>
+
+    <!-- Time range selection -->
+    <form method="post" action="{{ url_for('routes.tour_price') }}">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                    <label for="start-date" class="mr-2">Khoảng thời gian:</label>
+                    <input type="date" class="form-control mr-2 w-auto" id="start-date" name="start_date" value="{{start_date}}" required>
+                    <label for="end-date" class="mr-2">đến</label>
+                    <input type="date" class="form-control mr-2 w-auto" id="end-date" name="end_date" value="{{end_date}}" required>
+                    <button class="btn btn-primary"><i class="fas fa-filter"></i>  Lọc</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Tên nhân viên</th>
+                    <th>Số lượng khách mới</th>
+                    <th>Số ca spa</th>
+                    <th>Tổng tiền tour</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in staff_report%}
+                <tr>
+                    <td>{{s.staff_name}}</td>
+                    <td>{{s.new_customers_count}}</td>
+                    <td>{{s.completed_bookings_count}}</td>
+                    <td>{{"{:,}".format(s.total_staff_money)}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

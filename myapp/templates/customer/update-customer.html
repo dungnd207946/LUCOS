@@ -1,0 +1,72 @@
+{% extends 'Base.html' %}
+{% block title %}Cập nhật thông tin khách hàng{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/detail-customer.css">
+    <link rel="stylesheet" href="/static/css/update-customer.css">
+{% endblock %}
+
+{% block content %}
+    {% for user in detail %}
+    <div class="wrapper">
+        <div class="header-div">
+            <header>
+                <nav class="header-navigation">
+                    <button class="btnDelete" onclick="delete_customer('{{user.id}}')">Delete</button>
+                </nav>
+            </header>
+        </div>
+        <form action="{{ url_for('routes.update_khach_hang_by_id', khach_hang_id=user.id) }}" method="post">
+        <h2 class="ten-kh"><input class="input-ten-kh" type="text" name="ten_khach_hang" value="{{user.ten_khach_hang}}"> </h2>
+        <div class="thong-tin-khach-hang">
+            <h4>Cập nhật thông tin cá nhân</h4>
+            <div class="thong-tin-ca-nhan">
+                <div class="left-table">
+                    <table>
+                        <tr>
+                            <td class="key"><strong>Mã khách hàng:</strong></td>
+                            <td class="value">{{user.id}}</td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Số điện thoại:</strong></td>
+                            <td class="value"><input type="text" name="so_dien_thoai" value="{{user.so_dien_thoai}}"></td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Khu vực:</strong></td>
+                            <td class="value"><input type="text" name="khu_vuc" value="{{user.khu_vuc}}"></td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Tình trạng da:</strong></td>
+                            <td class="value"><input type="text" name="skin" value="{{user.skin_property}}"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="right-table">
+                    <table>
+                        <tr>
+                            <td class="key"><strong>Nhóm khách hàng:</strong></td>
+                            <td class="value"><input type="text" name="nhom_khach_hang" value="{{user.nhom_khach_hang}}"></td>
+
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Giới tính:</strong></td>
+                            <td class="value">---</td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Email:</strong></td>
+                            <td class="value"><input type="text" name="email" value="{{user.email}}"></td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Điểm tích lũy:</strong></td>
+                            <td class="value"><input type="number" name="point" value="{{user.point}}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <button class="btnUpdate" type="submit">Cập nhật</button>
+        </div>
+        </form>
+    </div>
+
+    {% endfor %}
+<script src="../../static/js/detail-customer.js"></script>
+{% endblock %}

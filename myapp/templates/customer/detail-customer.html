@@ -1,0 +1,127 @@
+{% extends 'Base.html' %}
+{% block title %}Chi tiết khách hàng{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/detail-customer.css">
+{% endblock %}
+
+{% block content %}
+    <script>
+        // Kiểm tra xem có thông báo được truyền từ Flask không
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                // Hiển thị thông báo dưới dạng hộp thoại pop-up
+                window.onload = function() {
+                    alert('{{ messages[0] }}');
+                };
+            {% endif %}
+        {% endwith %}
+    </script>
+    {% for user in detail %}
+    <div class="wrapper">
+        <div class="header-div">
+            <h2 class="ten-kh"> {{user.ten_khach_hang}}</h2>
+            <button class="btnUpdate" onclick="window.location.href='/khach-hang/update/{{user.id}}'">Update</button>
+            <button class="btnDelete" onclick="delete_customer('{{user.id}}')">Delete</button>
+        </div>
+
+        <div class="thong-tin-khach-hang">
+            <h4>Thông tin cá nhân</h4>
+            <div class="thong-tin-ca-nhan">
+                <div class="left-table">
+                    <table>
+                        <tr>
+                            <td class="key"><strong>Mã khách hàng:</strong></td>
+                            <td class="value">{{user.id}}</td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Số điện thoại:</strong></td>
+                            <td class="value">{{user.so_dien_thoai}}</td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Khu vực:</strong></td>
+                            <td class="value">{{user.khu_vuc}}</td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Ngày cuối mua hàng:</strong></td>
+                            <td class="value">{{user.last_buying_day}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="right-table">
+                    <table>
+                        <tr>
+                            <td class="key"><strong>Nhóm khách hàng:</strong></td>
+                            <td class="value">{{user.nhom_khach_hang}}</td>
+
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Giới tính:</strong></td>
+                            <td class="value">---</td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Email:</strong></td>
+                            <td class="value">{{user.email}}</td>
+                        </tr>
+                        <tr>
+                            <td class="key"><strong>Điểm tích lũy:</strong></td>
+                            <td class="value">{{user.point}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <p>Lưu ý: Những sản phẩm không còn tồn tại trong hệ thống sẽ không được liệt kê</p>
+        {% for order in orders %} <!-- Call the list of order -->
+        <div class="thong-tin-don-hang">
+            {% set count_dh = loop.index %}
+            <h4>{{count_dh}}. Đơn hàng {{order.id}}</h4>
+            <table>
+                <tr>
+                    <td class="key"><strong>Ngày bán:</strong></td>
+                    <td class="value">{{order.finish_date}}</td>
+                </tr>
+                <tr>
+                    <td class="key"><strong>Nguồn bán:</strong></td>
+                    <td class="value">{{order.selling_source}}</td>
+                </tr>
+            </table>
+            <table class="table-head">
+                <tr>
+                    <td class="key"><strong>Tên sản phẩm</strong></td>
+                    <td class="key"><strong>Giá tiền</strong></td>
+                    <td class="key"><strong>Ảnh minh họa</strong></td>
+                    <td class="key"><strong>Khối lượng</strong></td>
+                    <td class="key"><strong>Số lượng</strong></td>
+                </tr>
+            </table>
+            <table class="product-table">
+                {% for product in product_by_order[order.id] %} <!-- Call the list of product -->
+                {% set count = loop.index %}
+                <tr>
+                    <td class="key" id="product" onclick="redirectToProduct('{{product.anh}}')"><strong>{{count}}. {{ product.ten_san_pham}}</strong></td>
+                    {% for amount in amount_product_per_order[order.id][product.id] %} <!-- Call the price, weight and amount of product -->
+                        <td class="value">{{"{:,.0f}".format(product.listed_price)}} VND</td>
+                        <td class="value"><img src="{{product.anh}}"></td>
+                        <td class="value">{{product.khoi_luong}}</td>
+                        <td class="value">{{amount.so_luong}} sản phẩm</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            <table>
+                <tr>
+                    <td class="key"><strong>Chiết khấu:</strong></td>
+                    <td class="value">-- %</td>
+                </tr>
+                <tr>
+                    <td class="key"><strong>Tổng tiền:</strong></td>
+                    <td class="value" id="total">{{"{:,.0f}".format(order.total_price)}} VND</td>
+                </tr>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% endfor %}
+<script src="../../static/js/detail-customer.js"></script>
+{% endblock %}

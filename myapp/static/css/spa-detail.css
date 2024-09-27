@@ -1,0 +1,70 @@
+
+.main-detail {
+    padding: 1.5rem 9rem;
+}
+.back a {
+    text-decoration: none; /* Loại bỏ gạch chân */
+    color: #333; /* Màu chữ mặc định */
+    font-size: 1.25rem;
+}
+.back i {
+    font-size: 1.25rem;
+    margin-right: 5px;
+}
+.back a:hover {
+    color: #666; /* Màu chữ khi hover */
+    text-decoration: none; /* Vẫn giữ nguyên không có gạch chân khi hover */
+}
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #007bff;
+    color: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-body p {
+    margin: 0.5rem 0;
+}
+
+.card .payment .debt{
+    display: flex;
+    justify-content: space-between;
+}
+.list-group-item {
+    border: none;
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa;
+}
+
+.list-group-item p {
+    margin: 0.5rem 0;
+}
+.infor-customer {
+    margin-top: 1.5rem !important;
+}
+.infor-customer a {
+    /*color: #0088FF;*/
+    text-decoration: none;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.modal-payment{
+    display: none; /* Ẩn modal mặc định */
+    position: fixed; /* Định vị cố định */
+    z-index: 101; /* Đặt trước mọi nội dung khác */
+    left: 0;
+    top: 0;
+    width: 100%; /* Toàn màn hình */
+    height: 100vh; /* Toàn màn hình */
+    overflow: auto; /* Cho phép cuộn nếu nội dung quá lớn */
+    background-color: rgb(0,0,0); /* Màu nền tối */
+    background-color: rgba(0,0,0,0.4); /* Màu nền tối với độ trong suốt */
+    justify-content: center;
+    align-items: center;
+}

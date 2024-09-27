@@ -1,0 +1,57 @@
+.side-bar .navigation .btnReport {
+    background: #fff;
+    color: #333;
+}
+
+.main-report{
+    /*display: flex;*/
+    padding: 1.5rem 3rem;
+    /*padding-left: 15%;*/
+    /*padding-right: 15%;*/
+}
+.report-box {
+    height: 100%;
+    /*width: 200px;*/
+    /*min-width: 320px;*/
+    min-height: 280px;
+    /*padding: 15px;*/
+    /*box-sizing: border-box;*/
+    /*margin: 0 20px;*/
+}
+.report-box .box-title{
+    border-bottom: 1px solid lightgray;
+}
+.report-box .box-title h6{
+    text-transform: initial;
+    font-size: 18px;
+    font-weight: bold;
+}
+.card-body{
+    border-radius: 10px;
+    background-color: white;
+}
+
+.report-box .box-content ul{
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+.report-box .box-content li{
+    display: flex;
+    padding: 8px 0;
+    cursor: pointer;
+    align-items: center;
+}
+.report-box .box-content li:hover{
+    background-color: #e0e9f4;
+}
+
+.report-box .box-content li .report-icon {
+    min-width: 30px;
+    color: gray;
+}
+.report-box .box-content li .report-icon i::before{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}

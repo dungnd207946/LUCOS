@@ -1,0 +1,65 @@
+body {
+    background-color: #f0f2f5;
+}
+
+.root{
+    padding: 32px 32px 24px;;
+}
+
+.container-bckq {
+    width: 80%;
+    margin-bottom: 24px;
+}
+.container {
+    /*margin-top: 20px;*/
+    background: white;
+    width: 80%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 24px 24px 24px 24px;
+}
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+.row {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid #ddd; /* Đường kẻ phân cách giữa các hàng */
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.col {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd; /* Đường viền xung quanh mỗi cột */
+}
+
+.value {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333; /* Màu chữ */
+}
+
+/* Ví dụ cho màu sắc và icon */
+.col:first-child {
+    background-color: #e6f9ff; /* Màu xanh nhạt cho cột doanh thu */
+    color: #007bff; /* Màu xanh đậm cho chữ và icon */
+}
+
+.col:nth-child(2) {
+    background-color: #dff0d8; /* Màu xanh lá nhạt cho cột đơn hàng mới */
+    color: #28a745; /* Màu xanh lá đậm cho chữ và icon */
+}
+
+.col:nth-child(3) {
+    background-color: #ffdddd; /* Màu đỏ nhạt cho cột đơn trả hàng */
+    color: #dc3545; /* Màu đỏ đậm cho chữ và icon */
+}
+
+.col:last-child {
+    background-color: #fff3cd; /* Màu vàng nhạt cho cột đơn hủy */
+    color: #ffc107; /* Màu vàng đậm cho chữ và icon */
+}

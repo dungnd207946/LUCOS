@@ -1,0 +1,65 @@
+{% extends 'Base.html' %}
+{% block title %}Báo cáo{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/report/main.css">
+
+{% endblock %}
+{% block content %}
+<div class="main-report">
+    <div class="row ">
+        <div class="col-md-4 report-box">
+            <div class="mb-4 card-body">
+                 <div class="box-title">
+                    <h6>Báo cáo spa</h6>
+                </div>
+                <div class="box-content">
+                    <ul>
+                        <li onclick="window.location.href='{{ tour_price_url }}'">  <!-- url được định nghĩa trong report.py -->
+                            <div class="report-icon"><i class="fas fa-money-check"></i></div>
+                            <div><span>Tiền tour theo nhân viên</span></div>
+                        </li>
+                        <li>
+                            <div class="report-icon"><i class="fas fa-leaf"></i></div>
+                            <div><span>Mặt nạ</span></div>
+                        </li>
+                        <li>
+                            <div class="report-icon"><i class="fas fa-spa"></i></div>
+                            <div><span>Liệu trình</span></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 report-box">
+            <div class="mb-4 card-body" >
+                <div class="box-title">
+                    <h6>Báo cáo khách hàng</h6>
+                </div>
+                <div class="box-content">
+                    <ul>
+                        <li>
+                            <div class="report-icon"><i class="fas fa-calendar-alt"></i></div>
+                            <div><span>Số buổi spa</span></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 report-box">
+            <div class="mb-4 card-body">
+                <div class="box-title">
+                    <h6>Báo cáo nhân viên</h6>
+                </div>
+                <div class="box-content">
+                    <ul>
+                        <li>
+                            <div class="report-icon"><i class="fas fa-chart-line"></i></div>
+                            <div><span>Doanh thu</span></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

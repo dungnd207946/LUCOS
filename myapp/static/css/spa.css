@@ -1,0 +1,219 @@
+.side-bar .navigation .btnSpa {
+    background: #fff;
+    color: #333;
+}
+
+.bang {
+    margin-top: 5%;
+    padding: 30px 30px 30px 30px ;
+    /*background: lightgray;*/
+    z-index: 1;
+}
+
+table {
+    color: black;
+    table-layout: fixed;
+    width: 100%;
+    font-size: 16px;
+    border-collapse: collapse;
+    text-align: left;
+    background-color: white;
+    border: 1px solid lightgray;
+}
+table thead{
+    /*background: rgba(211, 211, 211, 0.5);*/
+}
+table th,
+table td{
+    width: 100px;
+    padding: 10px;
+    border-top: 1px solid lightgray;
+}
+
+table tbody td{
+    padding: 10px;
+    overflow: hidden; /* Ẩn nội dung bị tràn ra ngoài ô */
+    text-overflow: ellipsis;
+    /*white-space: nowrap;*/
+}
+table tbody tr{
+    cursor: pointer;
+}
+table tbody tr:hover{
+    background: rgba(128, 128, 128, 0.1) /* Độ mờ 0 là hoàn toàn trong suốt */;
+}
+
+th.checkbox{
+    width: 60px;
+}
+th.id{
+    width: 100px;
+}
+
+.id-value {
+    color: #007bff;
+}
+th.name {
+    width: 12rem;
+}
+table tr:hover td {
+    overflow: visible; /* Hiển thị nội dung đầy đủ khi rê chuột vào */
+    white-space: normal; /* Cho phép nội dung tràn ra nhiều dòng */
+}
+
+.search-box{
+    padding-bottom: 20px;
+}
+.search-box input {
+    width: 400px;
+    height: 40px;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+.search-box button {
+    width: 100px;
+    height: 40px;
+    background: #007bff;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+}
+.search-box button:hover{
+    background: #0056b3;
+}
+
+.filter-box {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.filter-item {
+    margin-bottom: 10px;
+}
+
+.filter-item label {
+    display: inline-block;
+    width: 120px; /* Độ rộng của nhãn */
+    min-width: 10rem;
+}
+
+.filter-item select {
+    width: 200px; /* Độ rộng của select box */
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.filter-form button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+.filter-form button:hover {
+    background-color: #0056b3;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* CSS cho checkbox */
+.checkbox-custom {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+/* Hiển thị con trỏ chuột pointer khi hover vào checkbox */
+.checkbox-custom:hover {
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.row-selected {
+    background-color: rgba(128, 128, 128, 0.4); /* Màu nền khi hàng được chọn */
+}
+/* Định nghĩa animation cho nút action */
+@keyframes fade-in {
+  from {
+       transform: translateX(-100%);
+    opacity: 0; /* Bắt đầu từ opacity = 0 */
+  }
+  to {
+      transform: translateX(0);
+    opacity: 1; /* Kết thúc với opacity = 1 */
+  }
+}
+/* Áp dụng animation cho phần tử */
+.fade-in {
+  animation: fade-in 0.5s ease-out; /* Thời gian 0.5s, dễ dàng ra ngoài */
+}
+
+.action-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 10px;
+}
+
+.btn-normal {
+    display: flex;
+    gap: 10px;
+}
+.btn-box {
+    display: none;
+    gap: 10px;
+}
+
+/* Phong cách cho modal */
+.modal {
+    display: none; /* Ẩn modal mặc định */
+    position: fixed; /* Định vị cố định */
+    z-index: 101; /* Đặt trước mọi nội dung khác */
+    left: 0;
+    top: 0;
+    width: 100%; /* Toàn màn hình */
+    height: 100%; /* Toàn màn hình */
+    overflow: auto; /* Cho phép cuộn nếu nội dung quá lớn */
+    background-color: rgb(0,0,0); /* Màu nền tối */
+    background-color: rgba(0,0,0,0.4); /* Màu nền tối với độ trong suốt */
+}
+
+/* Phong cách cho nội dung modal */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% từ trên và dưới và canh giữa */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%; /* Độ rộng modal */
+}
+
+/* Phong cách cho nút đóng */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    width: 40px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

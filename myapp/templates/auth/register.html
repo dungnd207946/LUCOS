@@ -1,0 +1,62 @@
+{% extends 'HomePage.html' %}
+{% block title %}Đăng Kí Hệ Thống CSKH{% endblock %}
+{% block css %}
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/auth/register.css">
+    <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if message %}
+    <div class="alert alert-dismissable">
+        {{message}}
+    </div>
+    {% endif %}
+    <div class="register">
+        <form id="register-form" action="{{ url_for('auth.register_page') }}" method="post">
+            <h1>Register</h1>
+            <div class="input-box">
+                <input id="register-fullname" name="fullname" type="text" placeholder="Full name" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input id="register-username" name="username" type="text" placeholder="Username" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input id="register-phonenumber" name="phone_number" type="text" placeholder="Phone number" required>
+                <i class='bx bx-phone'></i>
+            </div>
+            <div class="input-box">
+                <input id="register-password" name="user_password" type="password" placeholder="Password" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+            <div class="input-box">
+                <input id="confirm-password" name="confirm_password" type="password" placeholder="Confirm Password" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+            <div class="input-box"><label><select name="user_role">
+                <option value="" disabled selected hidden style="font-size: 14px;">Select role</option>
+                <option value="ADMIN">ADMIN</option>
+                <option value="USER">USER</option>
+            </select></label></div>
+
+            <div class="remember-forgot">
+                <label><input type="checkbox" required>I agree to the terms & conditions</label>
+            </div>
+
+            <button type="submit" class="btn" >Register</button>
+
+            <div class="login-link">
+                <p>Already have account ?
+                    <a href="{{url_for('auth.login_page')}}">Login</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+    <script src="../static/js/script.js"></script>
+    <script src="../static/js/register.js"></script>
+{% endblock %}

@@ -1,0 +1,54 @@
+
+@media (min-width: 768px) {
+    .container, .container-md, .container-sm {
+        max-width: 75rem; /* Thay đổi giá trị max-width theo nhu cầu của bạn */
+    }
+}
+
+.customer-name {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.task-table {
+    margin-top: 20px;
+}
+.task-table th, .task-table td {
+    vertical-align: middle;
+    /*word-wrap: break-word;*/
+    /*word-break: break-all;*/
+}
+table th,
+table td {
+    width: 12rem;
+}
+.task-id {
+    width: 3rem;
+}
+.description {
+    width: 20rem;
+}
+.finished {
+    text-decoration: line-through;
+    color: grey;
+}
+
+.finish-icon i{
+    margin-left: 3rem;
+}
+
+.note {
+    width: 20rem;
+}
+
+.table td.priority {
+    padding-left: 3.5rem;
+}
+.action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.action-buttons button {
+    margin-right: 5px;
+}

@@ -1,0 +1,48 @@
+{% extends 'HomePage.html' %}
+{% block title %}Đăng Nhập Hệ Thống CSKH{% endblock %}
+{% block css %}
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/auth/login.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if message %}
+        <div class="alert alert-danger">
+            {{message}}
+        </div>
+    {% endif %}
+    <div class="login">
+        <form action="{{ url_for('auth.login_page') }}" method="post">
+            <h1>Login</h1>
+            <div class="input-box">
+                <input id="username" name="username" type="text" placeholder="Username" required>
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <div class="input-box">
+                <input id="password" name="user_password" type="password" placeholder="Password" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+
+            <div class="remember-forgot">
+                <label><input type="checkbox">Remember me</label>
+                <a href="#">Forgot password ?</a>
+            </div>
+
+            <button type="submit" class="btn" >Login</button>
+
+            <div class="register-link">
+                <p>Don't have account ?
+                    <a href="{{url_for('auth.register_page')}}">Register</a>
+                </p>
+            </div>
+        </form>
+    </div>
+    <p>Tài khoản và mật khẩu mặc định: guest / guest</p>
+</div>
+    <script src="../static/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js"></script>
+    <!--<script src="../static/js/login.js"></script>-->
+{% endblock %}

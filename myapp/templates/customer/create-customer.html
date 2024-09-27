@@ -1,0 +1,86 @@
+{% extends 'Base.html' %}
+{% block title %}Thêm khách hàng mới{% endblock %}
+{% block css %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../static/css/create-customer.css">
+{% endblock %}
+{% block content %}
+    <div class="create container mt-5">
+        <form id="create-customer-form" method="post" action="{{ url_for('routes.create_customer') }}">
+            <h1 class="text-center text-primary mb-4">Thêm khách hàng mới</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="ten_khach_hang">Tên khách hàng*</label>
+                        <input id="ten_khach_hang" type="text" class="form-control" name="name" required>
+                        <div class="invalid-feedback">Vui lòng nhập tên khách hàng.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="so_dien_thoai">Số điện thoại*</label>
+                        <input id="so_dien_thoai" type="text" class="form-control" name="phone_number" required>
+                        <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="khu_vuc">Khu vực*</label>
+                        <select id="khu_vuc" class="form-control my-select2" name="khu_vuc" required>
+<!--                            <option value=" " disabled selected hidden>Tỉnh thành phố - Quận huyện</option>-->
+                            <option value="Khác">Khác</option>
+                            <option value="Hà Nội">Hà Nội</option>
+                        </select>
+                        <div class="invalid-feedback">Vui lòng chọn khu vực.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Địa chỉ</label>
+                        <input id="address" type="text" class="form-control" name="address">
+                    </div>
+                    <div class="form-group">
+                        <label for="skin">Tình trạng da*</label>
+                        <select id="skin" class="form-control my-select2" name="skin" required>
+                            <option value="" disabled selected hidden>Chọn loại da...</option>
+                            {% for s in skin %}
+                                <option value="{{s.id}}">{{s.type_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="id">Mã khách hàng*</label>
+                        <input id="id" type="text" class="form-control" name="id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" class="form-control" name="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nhom_khach_hang">Nhóm khách hàng</label>
+                        <select id="nhom_khach_hang" class="form-control" name="group">
+                            <option value="Bán lẻ">Bán lẻ</option>
+                            <option value="Bán sỉ">Bán sỉ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ngay_sinh">Ngày sinh</label>
+                        <input id="ngay_sinh" type="date" class="form-control" name="birth_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="payment-ability">Khả năng chi trả</label>
+                        <input id="payment-ability" type="text" class="form-control" name="payment_ability">
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mt-4">Thêm</button>  <!--Thêm khách hàng còn bị lỗi-->
+            </div>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.my-select2').select2();
+        });
+    </script>
+{% endblock %}

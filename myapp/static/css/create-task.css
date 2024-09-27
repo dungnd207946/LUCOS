@@ -1,0 +1,18 @@
+#suggestions {
+    max-height: 200px; /* Chiều cao tối đa của danh sách gợi ý */
+    overflow-y: auto; /* Hiển thị thanh cuộn nếu nội dung quá dài */
+    position: absolute;
+    width: 25.5rem; /* 2px để cân chỉnh với border của input */
+    border: 1px solid #ced4da; /* Border giống với input */
+    border-radius: 0 0 .25rem .25rem; /* Bo tròn các góc */
+    background-color: #fff; /* Màu nền trắng */
+    z-index: 100; /* Đảm bảo danh sách gợi ý hiển thị trên cùng */
+}
+
+#suggestions a {
+    cursor: pointer; /* Biến con trỏ thành pointer khi di chuột qua các gợi ý */
+}
+
+#existing_task option[disabled] {
+    color: lightgray;
+}
