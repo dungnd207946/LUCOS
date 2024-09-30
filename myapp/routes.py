@@ -11,7 +11,7 @@ from myapp.Services.customer import get_order, get_detail_customer, getAllCustom
 from myapp.Services.user import getStaff
 from myapp.Services.spa import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, getBookingByCardID, getSpaCardCustomer
 from myapp.templates.config import db
-from myapp.auth import admin_required, dev_required, user_required
+from myapp.auth import admin_required, dev_required, prevent_guest
 from datetime import datetime
 routes = Blueprint('routes', __name__, static_folder='static', template_folder='templates')
 
@@ -58,7 +58,7 @@ def common_response_7():
 def dash_board():
     return render_template("dashboard.html")
 
-@routes.route('/khach-hang', methods=['GET', 'POST'])
+@routes.route('/khach-hang', methods=['GET'])
 @login_required
 def infor_khach_hang(): #Đang xảy ra lỗi: Chuyển trang chưa kết hợp được với bộ lọc
     per_page            = 20
@@ -69,46 +69,20 @@ def infor_khach_hang(): #Đang xảy ra lỗi: Chuyển trang chưa kết hợp 
     source_data         = getAllCustomers() # Source data dùng để lấy dữ liệu vào ô lọc
     nhom_kh_list_sorted = getGroupCustomerList()
     khu_vuc_list_sorted = getAreaCustomerList()
-    if request.method == 'POST':
-        nhom_khach_hang          = request.form['nhom_khach_hang']
-        khu_vuc                  = request.form['khu_vuc']
-        conditions               = []
-        selected_nhom_khach_hang = nhom_khach_hang
-        selected_khu_vuc         = khu_vuc
-        if nhom_khach_hang != '':
-            conditions.append(Khach_hang.nhom_khach_hang == nhom_khach_hang)
-        if khu_vuc != '':
-            conditions.append(Khach_hang.khu_vuc == khu_vuc)
 
-        filtered_query = Khach_hang.query.filter(and_(*conditions))
-        filtered = filtered_query.paginate(page=page, per_page=per_page, error_out=False)
-        # khach_hang_filtered = filtered.items
-        total_customers = len(filtered_query.all())
-        print(total_customers)
-        return render_template('customer/infor-customer.html',
-                               khach_hang               = filtered_query,
-                               source_data              = source_data,
-                               nhom_kh_list_sorted      = nhom_kh_list_sorted,
-                               khu_vuc_list_sorted      = khu_vuc_list_sorted,
-                               kw='',
-                               selected_nhom_khach_hang = selected_nhom_khach_hang,
-                               selected_khu_vuc         = selected_khu_vuc,
-                               page                     = page,
-                               total_customers          = total_customers)
-    else:
-        pagination = khach_hang.paginate(page=page, per_page=per_page, error_out=False)
+    pagination = khach_hang.paginate(page=page, per_page=per_page, error_out=False)
 
-        khach_hang_filtered = pagination.items
-        source_data = Khach_hang.query.all()
-        total_customers = len(khach_hang.all())
-        return render_template('customer/infor-customer.html',
-                               khach_hang  = khach_hang,
-                               source_data = source_data,
-                               nhom_kh_list_sorted=nhom_kh_list_sorted,
-                               khu_vuc_list_sorted=khu_vuc_list_sorted,
-                               kw          = kw,
-                               page        = page,
-                               total_customers = total_customers)
+    khach_hang_filtered = pagination.items
+    source_data = Khach_hang.query.all()
+    total_customers = len(khach_hang.all())
+    return render_template('customer/infor-customer.html',
+                           khach_hang  = khach_hang,
+                           source_data = source_data,
+                           nhom_kh_list_sorted=nhom_kh_list_sorted,
+                           khu_vuc_list_sorted=khu_vuc_list_sorted,
+                           kw          = kw,
+                           page        = page,
+                           total_customers = total_customers)
 
 
 @routes.route('/khach-hang/infor-khach-hang/<string:khach_hang_id>')
@@ -167,12 +141,14 @@ def create_customer():
 
 @routes.route('/khach-hang/infor-khach-hang/delete/<string:khach_hang_id>', methods=['DELETE'])
 @login_required
+@prevent_guest
 def delete_khachhang_by_id(khach_hang_id):
     sqlQuery = 'DELETE FROM khach_hang WHERE id = %s'
     return delete(sqlQuery,khach_hang_id)
 
 @routes.route('/khach-hang/update/<string:khach_hang_id>', methods=['GET', 'POST'])
 @login_required
+@prevent_guest
 def update_khach_hang_by_id(khach_hang_id):
     customers = Khach_hang.query.filter(Khach_hang.id == khach_hang_id)
     if request.method == 'POST':
@@ -246,6 +222,7 @@ def get_all_customer_suggestions():
     return jsonify({'suggestions': suggestions})
 @routes.route('/khach-hang/handle_actions', methods=['POST'])
 @login_required
+@prevent_guest
 def handle_actions():
     if request.method == 'POST':
         action = request.form['action']
@@ -268,6 +245,7 @@ def handle_actions():
 
 @routes.route('/khach-hang/create-multi-task', methods=['GET', 'POST'])
 @login_required
+@prevent_guest
 def create_multi_task():
     allTask = getALlTask()
     allStaff = getStaff()

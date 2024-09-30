@@ -34,7 +34,7 @@ function generateTimeSlots(staffs) {
         let startTime = new Date();
         startTime.setHours(9, 0, 0); // Set start time to 9:00 AM
 
-        for (let i = 0; i < 40; i++) { // 40 slots for 15 minutes each
+        for (let i = 0; i < 50; i++) { // 40 slots for 15 minutes each
             const timeString = startTime.toTimeString().substring(0, 5);
             const row = document.createElement('tr');
             const timeCell = document.createElement('td');

@@ -29,10 +29,10 @@ def dev_required(f):
             return redirect(request.referrer)
         return f(*args, **kwargs)
     return decorated_function
-def user_required(f):
+def prevent_guest(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if current_user.user_role != 'ADMIN' or current_user.user_role != 'USER':
+        if current_user.user_role == 'GUEST':
             print("Cần quyền admin")
             flash('Người dùng thử không có quyền truy cập.', 'error')
             return redirect(request.referrer)
@@ -65,7 +65,7 @@ def logout_page():
     return redirect(url_for('auth.login_page'))
 
 @auth.route('/register-box', methods=['GET', 'POST'])
-# @dev_required
+@dev_required
 # @admin_required
 def register_page():
     message = ''
