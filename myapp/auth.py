@@ -33,7 +33,7 @@ def prevent_guest(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if current_user.user_role == 'GUEST':
-            print("Cần quyền admin")
+            print("Bạn là người dùng thử")
             flash('Người dùng thử không có quyền truy cập.', 'error')
             return redirect(request.referrer)
         return f(*args, **kwargs)

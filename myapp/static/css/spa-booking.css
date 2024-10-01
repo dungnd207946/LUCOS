@@ -9,14 +9,14 @@
     padding: 1.5rem;
 }
 .left-container{
-    width: 1000px;
+    /*width: 1000px;*/
 }
 .schedule-container {
     top: 5rem;
     left: 288px;
     margin-top: 10px;
     background: white;
-    min-width: 600px;
+    /*min-width: 600px;*/
 
     padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -71,7 +71,7 @@
 .booking-container {
     /*position: sticky;*/
     /*min-width: 400px;*/
-    width: 450px;
+    /*width: 450px;*/
     overflow-y: auto;
     max-height: 85vh;
 }
@@ -344,4 +344,17 @@
 
 .save-booking {
     margin-right: 20px;
+}
+
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl, .left-container, .booking-container {
+        max-width: 100%;
+    }
+}
+@media (min-width: 768px) {
+    .col-md-12 {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }

@@ -6,106 +6,117 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 {% endblock %}
 {% block content %}
-<div class="main">
-    <div class="left-container">
-        <div class="legend">
-            <div class="legend-item">
-                <span class="legend-color" style="background-color: rgba(238, 180, 50, 1);"></span>
-                <span>Khách chưa đến</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color" style="background-color: rgba(28, 134, 238,1);"></span>
-                <span>Hoàn thành</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color" style="background-color: rgba(153, 0, 17, 0.8);"></span>
-                <span>Khách hủy</span>
-            </div>
-        </div>
-        <div class="schedule-container">
-
-            <div class="schedule-header">
-                <h2>Booked Schedule</h2>
-                <div class="day-filter">
-                    Choose the day:
-                    <input type="date" id="schedule-date" onchange="filterScheduleByDate()">
+<div class="container main">
+    <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-12 left-container">
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: rgba(238, 180, 50, 1);"></span>
+                    <span>Khách chưa đến</span>
                 </div>
-            </div >
-            <div id="table-container">
-
-            </div>
-            <!-- Add more time slots as needed -->
-        </div>
-    </div>
-
-    <div id="myModal" class="modal-detail-schedule">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div id="modal-body"></div>
-        </div>
-    </div>
-    <div class="booking-container">
-        <h1>Spa Booking</h1>
-        <form id="main-form" action="{{url_for('api.booking')}}" method="post">
-            <div id="form-wrapper">
-                <div class="form-container">
-                    <h2>Booking Details</h2>
-                    <div class="form-group customer-select">
-                        <label for="customer_id">Khách hàng:</label>
-                        <input type="text" class="form-control" id="customer_id" name="customer_id" required autocomplete="off" oninput="getSpaSuggestions(this.value)" onfocus="showAllSpaSuggestions(this.value)">
-                        <div id="suggestions" class="list-group " style="display: none;"></div>
-                    </div>
-
-                    <div class="form-group"  id="customer-card-container" style="display: none">
-                    </div>
-                    <div class="form-group" style="display: flex; align-items: center;">
-                        <label for="is_new_customer">Khách hàng mới:</label>
-                        <input type="checkbox" id="is_new_customer" name="is_new_customer" style="width: 18px; height: 18px; margin-left: 10px; margin-bottom: 5px">
-                    </div>
-                    <div class="form-group" style="display: flex; justify-content: space-between">
-                        <div style="width: 40%">
-                            <label for="staff">Nhân viên:</label>
-                            <select class="form-control" id="staff" name="staff" required>
-                                <option value="" disabled selected hidden>Chọn nhân viên...</option>
-                                {% for staff in staffs %}
-                                    <option value="{{ staff.id }}">{{ staff.full_name }}</option>
-                                    <!--Thẻ option sẽ trả về giá trị của value khi submit-->
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div style="width: 40%">
-                            <label for="mask">Mặt nạ:</label>
-                            <select id="mask" name="mask" required>
-                                <option value="" disabled selected hidden>Chọn mặt nạ...</option>
-                                {% for m in mask_json %}
-                                    <option value="{{ m.id }}">{{ m.mask_name }}</option>
-                                {% endfor %}
-
-                                <!-- Add more masks as needed -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="date">Thời gian bắt đầu:</label>
-<!--                        <input type="datetime-local" id="date" name="date" placeholder="YYYY-MM-DD HH:MM"  required>-->
-                        <input type="datetime-local" id="date" name="date" placeholder="YYYY-MM-DD HH:MM" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="customer_demand">Yêu cầu của khách hàng:</label>
-                        <textarea id="customer_demand" name="customer_demand" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="notes">Ghi chú:</label>
-                        <textarea id="notes" name="notes" rows="3"></textarea>
-                    </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: rgba(28, 134, 238,1);"></span>
+                    <span>Hoàn thành</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background-color: rgba(153, 0, 17, 0.8);"></span>
+                    <span>Khách hủy</span>
                 </div>
             </div>
-            <div class="buttons">
-                <button class="btn btn-submit" type="submit" onclick="getCustomerId()">Submit Booking</button>
+            <div class="schedule-container">
+                <div class="schedule-header">
+                    <h2>Lịch đã hẹn</h2>
+                    <div class="day-filter">
+                        Choose the day:
+                        <input type="date" id="schedule-date" onchange="filterScheduleByDate()">
+                    </div>
+                </div>
+                <div id="table-container"></div>
             </div>
-        </form>
+        </div>
+
+        <div class="col-lg-4 col-md-8 col-sm-12 booking-container">
+            <h1 style="color: transparent">Đặt lịch</h1>
+            <form id="main-form" action="{{url_for('api.booking')}}" method="post">
+                <div id="form-wrapper">
+                    <div class="form-container">
+                        <h2>Đặt lịch</h2>
+                        <div class="form-group customer-select">
+                            <label for="customer_id">Khách hàng:</label>
+                            <input type="text" class="form-control" id="customer_id" name="customer_id" required autocomplete="off" oninput="getSpaSuggestions(this.value)" onfocus="showAllSpaSuggestions(this.value)">
+                            <div id="suggestions" class="list-group" style="display: none;"></div>
+                        </div>
+
+                        <div class="form-group" id="customer-card-container" style="display: none"></div>
+
+                        <div class="form-group d-flex align-items-center">
+                            <label for="is_new_customer">Khách hàng mới:</label>
+                            <input type="checkbox" id="is_new_customer" name="is_new_customer" class="ml-2" style="width: 18px; height: 18px;">
+                        </div>
+
+                        <div class="form-group d-flex justify-content-between">
+                            <div class="w-50 mr-2">
+                                <label for="staff">Nhân viên:</label>
+                                <select class="form-control" id="staff" name="staff" required>
+                                    <option value="" disabled selected hidden>Chọn nhân viên...</option>
+                                    {% for staff in staffs %}
+                                        <option value="{{ staff.id }}">{{ staff.full_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="w-50">
+                                <label for="mask">Mặt nạ:</label>
+                                <select class="form-control" id="mask" name="mask" required>
+                                    <option value="" disabled selected hidden>Chọn mặt nạ...</option>
+                                    {% for m in mask_json %}
+                                        <option value="{{ m.id }}">{{ m.mask_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date">Thời gian bắt đầu:</label>
+                            <input type="datetime-local" class="form-control" id="date" name="date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customer_demand">Yêu cầu của khách hàng:</label>
+                            <textarea class="form-control" id="customer_demand" name="customer_demand" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Ghi chú:</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn btn-primary btn-submit" type="submit" onclick="getCustomerId()">Xác nhận</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div id="myModal" class="modal-detail-schedule">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<style>
+    @media (max-width: 768px) {
+        .modal-content {
+            width: 80%;
+        }
+    }
+</style>
+
     <script>
         function filterScheduleByDate() {
             const unformattedDate = document.getElementById('schedule-date').value;
