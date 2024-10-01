@@ -24,7 +24,7 @@
     </style>
     <div class="bang">
         <div class="search-box">
-            <form class="search-form" action="{{url_for('routes.spa_search')}}" method="post">
+            <form class="search-form" action="{{url_for('api.spa_search')}}" method="post">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Nhập dữ liệu cần tìm ..." name="search" value="{{kw}}">
                     <div class="input-group-append">
@@ -34,7 +34,7 @@
             </form>
         </div>
         <div class="filter-box">
-            <form class="filter-form" action="{{url_for('routes.spa_filter')}}" method="post">
+            <form class="filter-form" action="{{url_for('api.spa_filter')}}" method="post">
                 <div class="filter-item">
                     <label for="payment">Thanh toán</label>
                     <select id="payment" name="payment">
@@ -67,7 +67,7 @@
                 <button class="btn btn-primary" type="submit"><i class="fas fa-filter"></i> Áp dụng lọc</button>
             </form>
         </div>
-        <form id="customerForm" method="POST" action="{{ url_for('routes.handle_actions') }}">
+        <form id="customerForm" method="POST" action="{{ url_for('api.handle_actions') }}">
             <div class="action-box">
 
                 <div class="btn-normal" >

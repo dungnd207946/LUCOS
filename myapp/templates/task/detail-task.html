@@ -42,7 +42,7 @@
                                 <i class="fas fa-edit"></i></button>
 
                             <!--Form để thực hiện xóa task-->
-                            <form method="POST" action="{{ url_for('routes.delete_task', customer_id=task.customer_id, staff_id=task.staff_id, id=task.id) }}">
+                            <form method="POST" action="{{ url_for('api.delete_task', customer_id=task.customer_id, staff_id=task.staff_id, id=task.id) }}">
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirmDelete()">
                                     <i class="fas fa-trash"></i>
                                 </button>

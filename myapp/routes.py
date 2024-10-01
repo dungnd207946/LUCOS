@@ -26,7 +26,7 @@ def common_response_1():
 
 @routes.context_processor
 def common_response_2():
-    create_url = url_for('routes.create_customer')
+    create_url = url_for('api.create_customer')
     return {'create_url': create_url}
 
 @routes.context_processor
@@ -97,46 +97,10 @@ def detail_khach_hang(khach_hang_id):
                            product_by_order            = product_by_order,
                            amount_product_per_order    = amount_product_per_order)
 
-@routes.route('/khach-hang/them-khach-hang', methods=['GET', 'POST'])
+@routes.route('/khach-hang/them-khach-hang', methods=['GET'])
 @login_required
-def create_customer():
+def create_customer_view():
     skin = Skin_type.query.all()
-    if request.method == 'POST':
-        try:
-            id              = request.form['id']
-            name            = request.form['name']
-            phone_number    = request.form['phone_number']
-            khu_vuc         = request.form['khu_vuc']
-            address         = request.form['address']
-            payment_ability = request.form['payment_ability']
-            email           = request.form['email']
-            group           = request.form['group']
-            birth_date      = request.form['birth_date']
-            skin            = request.form['skin']
-            new_customer = Khach_hang(id=id,
-                                      ten_khach_hang=name,
-                                      so_dien_thoai=phone_number,
-                                      khu_vuc=khu_vuc,
-                                      dia_chi = address,
-                                      payment_ability=payment_ability,
-                                      skin_property=skin,
-                                      email=email,
-                                      nhom_khach_hang=group,
-                                      ngay_sinh=birth_date,
-                                      point=0,
-                                      active=1)
-            db.session.add(new_customer)
-            db.session.commit()
-            new_customer_skin = Customer_skin(skin_type_id=skin,
-                                              customer_id=new_customer.id)
-            db.session.add(new_customer_skin)
-            db.session.commit()
-            flash('Thêm khách hàng thành công!', 'success')
-            return redirect(url_for('routes.infor_khach_hang', khach_hang_id=id))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash('Tạo thẻ thất bại! Vui lòng thử lại.', 'error')
-            print(e)  # In lỗi ra console để debug
     return render_template('customer/create-customer.html', skin=skin)
 
 @routes.route('/khach-hang/infor-khach-hang/delete/<string:khach_hang_id>', methods=['DELETE'])
@@ -146,28 +110,10 @@ def delete_khachhang_by_id(khach_hang_id):
     sqlQuery = 'DELETE FROM khach_hang WHERE id = %s'
     return delete(sqlQuery,khach_hang_id)
 
-@routes.route('/khach-hang/update/<string:khach_hang_id>', methods=['GET', 'POST'])
+@routes.route('/khach-hang/update/<string:khach_hang_id>', methods=['GET'])
 @login_required
-@prevent_guest
 def update_khach_hang_by_id(khach_hang_id):
     customers = Khach_hang.query.filter(Khach_hang.id == khach_hang_id)
-    if request.method == 'POST':
-        for customer in customers:
-            try:
-                customer.ten_khach_hang  = request.form['ten_khach_hang']
-                customer.so_dien_thoai   = request.form['so_dien_thoai']
-                customer.khu_vuc         = request.form['khu_vuc']
-                customer.skin_property   = request.form['skin']
-                customer.nhom_khach_hang = request.form['nhom_khach_hang']
-                customer.email           = request.form['email']
-                customer.point           = request.form['point']
-                db.session.commit()
-                flash('Cập nhật thông tin khách hàng thành công!', 'success')
-                return redirect(url_for('routes.detail_khach_hang', khach_hang_id=khach_hang_id))
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash('Cập nhật thông tin khách hàng thất bại! Vui lòng thử lại sau.', 'error')
-                print(e)  # In lỗi ra console để debug
     return render_template("customer/update-customer.html", detail=customers)
 
 @routes.route('/get-spa-customer-suggestions') # Tìm kí tự trùng lặp giữa input và data rồi đưa ra kết quả
@@ -220,72 +166,16 @@ def get_all_customer_suggestions():
                     'phone'      : customer.so_dien_thoai}
                    for customer in customers]
     return jsonify({'suggestions': suggestions})
-@routes.route('/khach-hang/handle_actions', methods=['POST'])
-@login_required
-@prevent_guest
-def handle_actions():
-    if request.method == 'POST':
-        action = request.form['action']
-        selected_customers = request.form.getlist('selected_customers')
-        print(action)
-        if action == 'delete':
-            for customer_id in selected_customers:
-                customer = Khach_hang.query.get(customer_id)
-                if customer:
-                    db.session.delete(customer)
-            db.session.commit()
-            flash('Xóa khách hàng thành công!', 'success')
-        if action == 'createTask':
-            session['list_selected_customers'] = selected_customers  # Lưu danh sách vào session để truyền đi
-            return redirect(url_for('routes.create_multi_task'))
-        if action == 'booking':
-            return redirect(url_for('routes.booking'))
 
-    return redirect(url_for('routes.infor_khach_hang'))
-
-@routes.route('/khach-hang/create-multi-task', methods=['GET', 'POST'])
+@routes.route('/khach-hang/create-multi-task', methods=['GET'])
 @login_required
-@prevent_guest
 def create_multi_task():
     allTask = getALlTask()
     allStaff = getStaff()
-    if request.method == 'POST':
-        selected_customers = session.get('list_selected_customers')       #Lấy danh sách id từ session
-        extra_description  = request.form['new_task']
-        staff_id           = request.form['staff']
-        task_id            = request.form['existing_task']                       # Nội dung hiện lên form là description, nhưng trả về giá trị là id
-
-        time_str           = request.form['deadline']
-        time_obj           = datetime.strptime(time_str, '%Y-%m-%dT%H:%M')  # Chuyển đổi chuỗi thành đối tượng datetime
-        deadline           = time_obj.strftime('%d/%m/%Y %H:%M')                    # Chuyển đổi định dạng của thời gian
-        priority           = request.form['priority']
-        note               = request.form['note']
-        for customer_id in selected_customers:
-            try:
-                new_task_for_customer = Task_Customer(
-                    task_id    = task_id,
-                    customer_id= customer_id,
-                    staff_id   = staff_id,
-                    deadline   = deadline,
-                    finished   = 0,
-                    priority   = priority,
-                    note       = note,
-                    outdated   = 0,
-                    extra_description = extra_description
-                )
-                db.session.add(new_task_for_customer)
-                db.session.commit()
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                print(e)  # In lỗi ra console để debug
-
-        flash('Thêm task cho các khách hàng thành công!', 'success')
-        return redirect(url_for('routes.infor_khach_hang'))
     return render_template("task/create_for_multi_customer.html", existing_tasks=allTask, staffs=allStaff)
 
-@routes.route('/task', methods=['POST', 'GET'])
+@routes.route('/task', methods=['GET'])
 @login_required
-# @dev_required
 def task():
     update_day_without_buying()             # update số ngày chưa mua hàng mỗi khi gọi hàm
     check_task_outdated()
@@ -296,17 +186,6 @@ def task():
 
     staffs = getStaff()
     staffs_ordered = staffs.order_by(User_account.full_name)
-    conditions = []
-    selected_staff = ''
-    if request.method == 'POST':
-        table          = table.subquery()
-        if current_user.user_role == 'ADMIN':
-            selected_staff = request.form['staff']
-            if selected_staff != '':
-                conditions.append(table.c.staff_id == selected_staff)
-
-        filtered       = db.session.query(table).filter(and_(*conditions)).all()
-        return render_template("task/task.html", tables=filtered, staffs=staffs_ordered, selected_staff=selected_staff)
     return render_template("task/task.html", tables=table, staffs=staffs_ordered)
 
 @routes.route('/task/task-detail/<string:khach_hang_id>/<string:staff_id>')
@@ -317,50 +196,15 @@ def task_detail(khach_hang_id, staff_id):
     return render_template("task/detail-task.html", details=details, customer=customer)
 
 
-@routes.route('/task/create-task', methods=['GET', 'POST'])
+@routes.route('/task/create-task', methods=['GET'])
 @login_required
-@admin_required
 def create_task():
     allTask = getALlTask()
     allStaff = getStaff()
-    if request.method == 'POST':
-        try:
-            customer_id       = request.form['customer_id']
-            staff_id          = request.form['staff']
-            task_id           = request.form['existing_task']  #Nội dung hiện lên form là description, nhưng trả về giá trị là id
-            extra_description = request.form['new_task']
-
-            time_str          = request.form['deadline']
-            time_obj          = datetime.strptime(time_str, '%Y-%m-%dT%H:%M')  # Chuyển đổi chuỗi thành đối tượng datetime
-            deadline          = time_obj.strftime('%d/%m/%Y %H:%M')                    # Chuyển đổi định dạng của thời gian
-
-            priority          = request.form['priority']
-            note              = request.form['note']
-            new_task_for_customer = Task_Customer(
-                task_id           = task_id,
-                customer_id       = customer_id,
-                staff_id          = staff_id,
-                deadline          = deadline,
-                finished          = 0,
-                priority          = priority,
-                note              = note,
-                outdated          = 0,
-                extra_description = extra_description
-            )
-            db.session.add(new_task_for_customer)
-            db.session.commit()
-            print(deadline)
-            print('add task success')
-            flash('Thêm task thành công!', 'success')
-            return redirect(url_for('routes.task'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash('Thêm task thất bại! Vui lòng thử lại.', 'error')
-            print(e)  # In lỗi ra console để debug
     return render_template("task/create.html", existing_tasks=allTask, staffs=allStaff)
 
 
-@routes.route('/task/update-task/<string:customer_id>/<string:staff_id>/<string:task_id>/<string:id>', methods=['GET', 'POST'])
+@routes.route('/task/update-task/<string:customer_id>/<string:staff_id>/<string:task_id>/<string:id>', methods=['GET'])
 @login_required
 def update_task(customer_id, staff_id, task_id, id):
     allTask = getALlTask()
@@ -390,59 +234,7 @@ def update_task(customer_id, staff_id, task_id, id):
         else:
             formatted_task['formatted_deadline'] = ''
         task_list.append(formatted_task)
-
-    updateTasks = Task_Customer.query.filter(Task_Customer.id == id)
-    if request.method == 'POST':
-        for updateTask in updateTasks:
-            try:
-                updateTask.task_id           = request.form['description']
-                updateTask.extra_description = request.form['extra_description']
-                # Biến đổi thời gian về dạng string
-                time_str                     = request.form['deadline']
-                time_obj                     = datetime.strptime(time_str, '%Y-%m-%dT%H:%M')
-                updateTask.deadline          = time_obj.strftime('%d/%m/%Y %H:%M')
-                updateTask.priority          = request.form['priority']
-                finished                     = request.form['finished']
-                if finished == 'true':
-                    updateTask.finished = True
-                else:
-                    updateTask.finished = False
-                updateTask.note              = request.form['note']
-                db.session.commit()
-                flash('Cập nhật thông tin task thành công!', 'success')
-                return redirect(url_for('routes.task_detail', khach_hang_id=customer_id, staff_id=staff_id))
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash('Cập nhật thông tin task thất bại! Vui lòng thử lại sau.', 'error')
-                print(e)  # In lỗi ra console để debug
     return render_template('task/edit.html', details=task_list, existing_tasks=allTask)
-
-@routes.route('/task/delete/<string:customer_id>/<string:staff_id>/<string:id>', methods=['POST'])
-@login_required
-def delete_task(customer_id, staff_id, id):
-    try:
-        task_to_delete = Task_Customer.query.get(id)
-        if task_to_delete:
-            db.session.delete(task_to_delete)
-            db.session.commit()
-            flash('Task được xóa thành công!', 'success')
-        else:
-            flash('Task not found.', 'error')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash('Xóa task thất bại! Vui lòng thử lại sau.', 'error')
-        print(e)  # In lỗi ra console để debug
-    return redirect(url_for('routes.task_detail', khach_hang_id=customer_id, staff_id=staff_id))
-
-@routes.route('/check-customer', methods=['POST']) # Hàm để check sự tồn tại của mã khách hàng, dùng trong 'task/create.html'
-@login_required
-def check_customer():
-    customer_id = request.json['customer_id']
-    customer = Khach_hang.query.get(customer_id)
-    if customer:
-        return jsonify({'exists': True})
-    else:
-        return jsonify({'exists': False})
 
 @routes.route('/spa')
 @login_required
@@ -460,102 +252,14 @@ def spa():
                            price_list = price_list
                            )
 
-@routes.route('/spa/filter', methods=['POST'])
-@login_required
-def spa_filter():
-    if request.method == "POST":
-        customers = getSpaCardCustomer()
-        payment_list = ['Đủ', 'Nợ']
-        price_list = ['Trên 2 triệu', 'Dưới 2 triệu']
-        conditions = []
-
-        payment = request.form['payment']
-        selected_payment = payment
-        if payment == 'Nợ':
-            conditions.append(SpaCard.debt > 0)
-        if payment == 'Đủ':
-            conditions.append(SpaCard.debt == 0)
-
-        price = request.form['price']
-        selected_price = price
-        if price == 'Trên 2 triệu':
-            conditions.append(SpaCard.total_price >= 2000000)
-        if price == 'Dưới 2 triệu':
-            conditions.append(SpaCard.total_price < 2000000)
-
-        filtered_customers = customers.filter(and_(*conditions))
-        return render_template('spa/main.html',
-                               khach_hang       = filtered_customers,
-                               selected_payment = selected_payment,
-                               selected_price   = selected_price,
-                               payment_list     = payment_list,
-                               price_list       = price_list)
-
-@routes.route('/spa/search', methods=['POST'])
-@login_required
-@dev_required
-def spa_search():
-    if request.method == "POST":
-        pass
-        return render_template('spa/main.html')
-@routes.route('/spa/create-card', methods=['GET','POST'])
+@routes.route('/spa/create-card', methods=['GET'])
 @login_required
 def create_card():
     allTreatment = Treatment.query.all()
     allStaff     = getStaff()
-    if request.method == 'POST':
-        try:
-            customer_id  = request.form['customer_id']
-            card_id      = request.form['card_id']
-            total_price  = request.form['total_price']
-            paid         = request.form['paid']
-            debt         = request.form['debt']
-            staff        = request.form['staff']
-            note         = request.form['note']
-            if card_id == '':
-                new_card = SpaCard(
-                                   customer_id=customer_id,
-                                   total_price=total_price,
-                                   paid=paid,
-                                   debt=debt,
-                                   note=note)
-            else:
-                new_card     = SpaCard(id          = card_id,
-                                       customer_id = customer_id,
-                                       total_price = total_price,
-                                       paid        = paid,
-                                       debt        = debt,
-                                       note        = note)
-            db.session.add(new_card)
-            db.session.commit()
-            new_card_staff = Card_Staff(card_id  = new_card.id,
-                                        staff_id = staff)
-            db.session.add((new_card_staff))
-            db.session.commit()
-            #Lấy số lượng treatment
-            treatment_count = len([key for key in request.form.keys() if key.startswith('treatment_id_')])
-            for i in range(1, treatment_count + 1):
-                treatment_id = request.form[f'treatment_id_{i}']
-                price        = request.form[f'price_{i}']
-                total_time   = request.form[f'total_time_{i}']
-                time_used    = request.form[f'time_used_{i}']
-
-                new_card_treatment = Card_Treatment(card_id      = new_card.id,
-                                                    treatment_id = treatment_id,
-                                                    price        = price,
-                                                    total_time   = total_time,
-                                                    time_used    = time_used)
-                db.session.add(new_card_treatment)
-                db.session.commit()
-            flash('Tạo thẻ mới thành công!', 'success')
-            return redirect(url_for('routes.spa'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash('Tạo thẻ thất bại vì mã thẻ bị trùng hoặc sai thao tác! Vui lòng thử lại.', 'error')
-            print(e)  # In lỗi ra console để debug
     return render_template('spa/card-create.html', treatments=allTreatment, staffs=allStaff)
 
-@routes.route('/spa/booking', methods=['GET','POST'])
+@routes.route('/spa/booking', methods=['GET'])
 @login_required
 def booking():
     selected_customers = session.get('list_selected_customers')
@@ -569,8 +273,6 @@ def booking():
                .join(Treatment, SpaBooking.treatment_id == Treatment.id)
                .join(Mask, SpaBooking.mask_id == Mask.id)
                .all())
-    print(result)
-
     booking_data = [
                     {'id'             : booking.id,
                      'staff_id'       : staff.id,
@@ -594,45 +296,6 @@ def booking():
     mask_json = [{'id':m.id,
                   'mask_name': m.mask_name}
                  for m in allMask]
-    if request.method == 'POST':
-        try:
-            customer_id     = request.form.get('customer_id')
-            treatment_id    = request.form.get('treatment_id')
-            card_id         = request.form.get('card_id')
-            mask_id         = request.form.get('mask')
-            staff_id        = request.form['staff']
-            date            = request.form['date']
-            print(date)
-            customer_demand = request.form['customer_demand']
-            note            = request.form['notes']
-            is_new_customer = request.form.get('is_new_customer')
-            if is_new_customer:
-                staff_money     = 40000
-                is_new_customer = 1
-            else:
-                t               = Treatment.query.filter(Treatment.id == treatment_id).first()
-                staff_money     = t.tour_price
-                is_new_customer = 0
-            new_booking     = SpaBooking(card_id      = card_id,
-                                      treatment_id    = treatment_id,
-                                      staff_id        = staff_id,
-                                      date            = date,
-                                      mask_id         = mask_id,
-                                      customer_demand = customer_demand,
-                                      note            = note,
-                                      status          = 1,
-                                      staff_money     = staff_money,
-                                      is_new_customer = is_new_customer
-                                      )
-            db.session.add(new_booking)
-            db.session.commit()
-            flash('Đặt lịch thành công!', 'success')
-            return redirect(url_for('routes.booking'))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash('Đặt lịch thất bại! Vui lòng thử lại.', 'error')
-            print(e)  # In lỗi ra console  debug
-    print("Loggg")
     return render_template('spa/booking.html',
                            treatments = allTreatment,
                            staffs     = allStaff,
@@ -640,49 +303,6 @@ def booking():
                            staff_json = staff_json,
                            mask_json  = mask_json)
 
-@routes.route('/spa/update-booking/<string:id>', methods=['POST'])
-def update_booking(id):
-    if request.method == 'POST':
-        updateBookings = SpaBooking.query.filter(SpaBooking.id == id)
-        for updateBooking in updateBookings: # Dù dùng vòng for nhưng updateBooking chỉ là tuple có 1 giá trị
-            try:
-                updateBooking.staff_id        = request.form.get('staff_modal')
-                updateBooking.date            = request.form.get('date_modal')
-                updateBooking.mask_id         = request.form.get('mask_modal')
-                updateBooking.customer_demand = request.form.get('customer_demand_modal')
-                updateBooking.note            = request.form.get('note_modal')
-                updateBooking.status          = request.form.get('status_modal_' + str(id))
-                if request.form.get('status_modal_' + str(id)) == str(2):
-                    # Update_card_treatment ( số lần sử dụng thẻ )
-                    update_card_treatment = Card_Treatment.query.filter(Card_Treatment.card_id == updateBooking.card_id,
-                                                                        Card_Treatment.treatment_id == updateBooking.treatment_id)
-                    for u in update_card_treatment:
-                        u.time_used += 1
-                        db.session.commit()
-                db.session.commit()
-                flash('Cập nhật thông tin đặt lịch thành công!', 'success')
-
-            except SQLAlchemyError as e:
-                db.session.rollback()
-                flash('Cập nhật thông tin đặt lịch thất bại! Vui lòng thử lại sau.', 'error')
-                print(e)  # In lỗi ra console để debug
-        return redirect(url_for('routes.booking'))
-
-@routes.route('/spa/delete-booking/<string:id>', methods=['POST'])
-def delete_booking(id):
-    try:
-        booking_to_delete = SpaBooking.query.get(id)
-        if booking_to_delete:
-            db.session.delete(booking_to_delete)
-            db.session.commit()
-            flash('Lịch đã được xóa thành công!', 'success')
-        else:
-            flash('Booking not found.', 'error')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        flash('Xóa lịch thất bại! Vui lòng thử lại sau.', 'error')
-        print(e)  # In lỗi ra console để debug
-    return redirect(url_for('routes.booking'))
 @routes.route('/get-all-card')
 def get_all_card():
     cards = getAllCard()
@@ -770,20 +390,3 @@ def spa_detail(card_id):
                            treatments   = treatments,
                            booking      = all_bookings,
                            update_modal = update_modal)
-@routes.route('/spa/update-card/<string:id>', methods=['POST'])
-@login_required
-@admin_required
-def update_card(id):
-    if request.method == 'POST':
-        try:
-            updateCards = SpaCard.query.filter(SpaCard.id == id)
-            for updateCard in updateCards:
-                updateCard.paid = request.form.get('paid_modal')
-                updateCard.debt = request.form.get('debt_modal')
-                db.session.commit()
-                flash('Cập nhật thông tin thanh toán thành công!', 'success')
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash('Cập nhật thông tin thanh toán thất bại! Vui lòng thử lại sau.', 'error')
-            print(e)  # In lỗi ra console để debug
-        return redirect(url_for('routes.spa_detail', card_id=id))

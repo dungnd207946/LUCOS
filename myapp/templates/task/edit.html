@@ -8,7 +8,7 @@
 <div class="container">
     <h2>Edit Task</h2>
     {% for task in details%}
-    <form method="POST" action="{{ url_for('routes.update_task', customer_id=task.customer_id, staff_id=task.staff_id, task_id=task.task_id, id=task.id) }}" onsubmit="return validateCheckboxes()">
+    <form method="POST" action="{{ url_for('api.update_task', customer_id=task.customer_id, staff_id=task.staff_id, task_id=task.task_id, id=task.id) }}" onsubmit="return validateCheckboxes()">
 
         <div class="form-group">
             <label for="description-option">Mô tả</label>

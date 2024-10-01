@@ -10,7 +10,7 @@
         <div class="background-opacity"></div>
         <div class="card-content">
             <h2>Thẻ Trị Liệu</h2>
-            <form method="post" action="{{url_for('routes.create_card')}}">
+            <form method="post" action="{{url_for('api.create_card')}}">
                 <div class="form-group">
                     <label for="customer_id">Khách hàng</label>
                     <input type="text" class="form-control" id="customer_id" name="customer_id" required autocomplete="off" oninput="getSuggestions(this.value)" onfocus="showAllSuggestions(this.value)">
