@@ -271,6 +271,7 @@ document.getElementById('is_odd_customer').addEventListener('change', function()
     const newCustomerName = document.getElementById('new_customer_name');
     const newCustomerPhone = document.getElementById('new_customer_phone');
     const newCustomerTreatment = document.getElementById('new_customer_treatment')
+    const price = document.getElementById('new_customer_treatment_price')
     const cardContainer = document.getElementById('customer-card-container');
     cardContainer.style.display = 'none'
     const customerID = document.getElementById('customer_id')
@@ -280,6 +281,7 @@ document.getElementById('is_odd_customer').addEventListener('change', function()
         newCustomerId.setAttribute('required', 'required');
         newCustomerName.setAttribute('required', 'required');
         newCustomerPhone.setAttribute('required', 'required');
+        price.setAttribute('required', 'required')
         customerID.removeAttribute('required');
     } else {
         formGroup.style.display = 'none';
@@ -288,6 +290,7 @@ document.getElementById('is_odd_customer').addEventListener('change', function()
         newCustomerName.removeAttribute('required');
         newCustomerPhone.removeAttribute('required');
         newCustomerTreatment.removeAttribute('required');
+        price.removeAttribute('required')
         customerID.setAttribute('required', 'required');
     }
 });

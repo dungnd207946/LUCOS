@@ -78,7 +78,7 @@
                             <div class="form-group justify-content-between d-flex">
                                 <div class="w-50 mr-2">
                                     <label for="new_customer_treatment">Liệu trình:</label>
-                                    <select id="new_customer_treatment" name="new_customer_treatment" required>
+                                    <select id="new_customer_treatment" name="new_customer_treatment">
                                         <!-- Options will be dynamically generated -->
                                         <option value="" disabled selected hidden>Chọn liệu trình...</option>
                                         {% for t in treatments %}
@@ -94,7 +94,7 @@
                         </div>
                         <div class="form-group customer-select" id="existed_customer">
                             <label for="customer_id">Khách hàng:</label>
-                            <input type="text" class="form-control" id="customer_id" name="customer_id" required autocomplete="off" oninput="getSpaSuggestions(this.value)" onfocus="showAllSpaSuggestions(this.value)">
+                            <input type="text" class="form-control" id="customer_id" name="customer_id" required="required" autocomplete="off" oninput="getSpaSuggestions(this.value)" onfocus="showAllSpaSuggestions(this.value)">
                             <div id="suggestions" class="list-group" style="display: none;"></div>
                         </div>
 
