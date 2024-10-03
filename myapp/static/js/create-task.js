@@ -1,6 +1,4 @@
 
-
-
 // Hàm để chọn giữa 2 cách nhập nội dung task
 function toggleTaskInput() {
     const taskOption = document.getElementById('existing_task').value;

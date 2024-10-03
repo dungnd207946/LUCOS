@@ -26,3 +26,6 @@ def getSpaCardCustomer():
                       .join(Khach_hang, SpaCard.customer_id == Khach_hang.id)
                 )
     return customer
+
+def getAllTreatments():
+    return Treatment.query.all()

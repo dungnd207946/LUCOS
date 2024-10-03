@@ -105,7 +105,7 @@
     resize: vertical;
 }
 .form-group select{
-    height: auto;
+    /*height: auto;*/
 }
 .form-group select option {
     padding: 10px;

@@ -23,6 +23,7 @@ class Khach_hang(db.Model):
     active             = Column(Boolean)
     day_without_buying = Column(Integer)
     picture            = Column(String(200))
+    is_experience      = Column(Boolean)
     # Đây là thuộc tính được SQLAlchemy tự động xử lý,
     # nó không phải là một cột trong bảng cơ sở dữ liệu. Đây là một collection của các đối tượng san_pham
     don_hangs          = relationship('Don_hang', secondary='kh_dh',back_populates='khach_hangs' , lazy=True)
@@ -159,7 +160,7 @@ class SpaCard(db.Model):
     customer_id        = Column(String(50), ForeignKey('khach_hang.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     total_price        = Column(Integer)
     paid               = Column(Integer)
-    debt               = Column(Integer)
+    debt               = Column(Integer, nullable=False)
     note               = Column(String(500))
     # relationship
     customer           = relationship("Khach_hang", foreign_keys=[customer_id])
@@ -193,7 +194,6 @@ class Card_Staff(db.Model):
     __tablename__ = 'card_staff'
     card_id = Column(Integer, ForeignKey('spa_card.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True, nullable=False)
     staff_id = Column(Integer, ForeignKey('user_account.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True, nullable=False)
-
 
 
 if __name__ == "__main__":

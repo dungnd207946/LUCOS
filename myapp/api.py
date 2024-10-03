@@ -398,23 +398,60 @@ def create_card():
 def booking():
     if request.method == 'POST':
         try:
-            customer_id     = request.form.get('customer_id')
-            treatment_id    = request.form.get('treatment_id')
-            card_id         = request.form.get('card_id')
             mask_id         = request.form.get('mask')
             staff_id        = request.form['staff']
             date            = request.form['date']
-            print(date)
             customer_demand = request.form['customer_demand']
             note            = request.form['notes']
             is_new_customer = request.form.get('is_new_customer')
-            if is_new_customer:
+            is_odd_customer = request.form.get('is_odd_customer')
+
+            if is_odd_customer:  #Nếu là khách trải nghiệm thì tạo khách mới, thẻ mới
+                customer_id       = request.form['new_customer_id']
+                customer_name     = request.form['new_customer_name']
+                customer_phone    = request.form['new_customer_phone']
+                customer_birthday = request.form['new_customer_birth']
+                treatment_id      = request.form['new_customer_treatment']
+                price             = request.form['new_customer_treatment_price']
+                new_customer      = Khach_hang(id             = customer_id,
+                                               ten_khach_hang = customer_name,
+                                               so_dien_thoai  = customer_phone,
+                                               ngay_sinh      = customer_birthday,
+                                               point          = 0,
+                                               active         = 1,
+                                               is_experience  = 1)
+                db.session.add(new_customer)
+                db.session.commit()
+
+                #Tạo thẻ mới
+                new_card          = SpaCard(customer_id = customer_id,
+                                            total_price = price,
+                                            paid        = price,
+                                            debt        = 0)
+                db.session.add(new_card)
+                db.session.commit()
+
+                #Tạo Card_Treatment mới
+                card_id            = new_card.id
+                new_card_treatment = Card_Treatment(card_id      = card_id,
+                                                    treatment_id = treatment_id,
+                                                    price        = price,
+                                                    total_time   = 1,
+                                                    time_used    = 0)
+                db.session.add(new_card_treatment)
+                db.session.commit()
+            else:
+                customer_id  = request.form.get('customer_id')
+                treatment_id = request.form.get('treatment_id')
+                card_id = request.form.get('card_id')
+            if is_new_customer or is_odd_customer:
                 staff_money     = 40000
                 is_new_customer = 1
             else:
                 t               = Treatment.query.filter(Treatment.id == treatment_id).first()
                 staff_money     = t.tour_price
                 is_new_customer = 0
+
             new_booking     = SpaBooking(card_id      = card_id,
                                       treatment_id    = treatment_id,
                                       staff_id        = staff_id,
@@ -429,11 +466,11 @@ def booking():
             db.session.add(new_booking)
             db.session.commit()
             flash('Đặt lịch thành công!', 'success')
-            return redirect(url_for('routes.booking'))
         except SQLAlchemyError as e:
             db.session.rollback()
             flash('Đặt lịch thất bại! Vui lòng thử lại.', 'error')
             print(e)  # In lỗi ra console  debug
+        return redirect(url_for('routes.booking'))
 
 @api.route('/spa/update-booking/<string:id>', methods=['POST'])
 @login_required

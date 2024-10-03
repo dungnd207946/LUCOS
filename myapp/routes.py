@@ -9,7 +9,7 @@ from myapp.API.services import delete, load_customer, update_day_without_buying
 from myapp.Services.task import getTaskByCustomerID_StaffID, get_table_task_for_admin, getALlTask, get_table_task_for_only_staff, check_task_outdated
 from myapp.Services.customer import get_order, get_detail_customer, getAllCustomers, getCustomerByCard, getGroupCustomerList, getAreaCustomerList, onlySpaCustomer
 from myapp.Services.user import getStaff
-from myapp.Services.spa import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, getBookingByCardID, getSpaCardCustomer
+from myapp.Services.spa import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, getBookingByCardID, getSpaCardCustomer, getAllTreatments
 from myapp.templates.config import db
 from myapp.auth import admin_required, dev_required, prevent_guest
 from datetime import datetime
@@ -255,7 +255,7 @@ def spa():
 @routes.route('/spa/create-card', methods=['GET'])
 @login_required
 def create_card():
-    allTreatment = Treatment.query.all()
+    allTreatment = getAllTreatments()
     allStaff     = getStaff()
     return render_template('spa/card-create.html', treatments=allTreatment, staffs=allStaff)
 
@@ -264,7 +264,7 @@ def create_card():
 def booking():
     selected_customers = session.get('list_selected_customers')
     allStaff = getStaff()
-    allTreatment = Treatment.query.all()
+    allTreatment = getAllTreatments()
     allMask = Mask.query.all()
     result = (db.session.query(SpaBooking, User_account, SpaCard, Khach_hang, Treatment, Mask)
                .join(User_account, SpaBooking.staff_id == User_account.id)

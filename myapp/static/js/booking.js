@@ -188,6 +188,10 @@ function showSuggestion(data){
 
 // Hàm Lấy suggestion thông qua việc nhập input
 function getSpaSuggestions(input) {
+    if (input.toString() === ''){
+        const cardContainer = document.getElementById('customer-card-container');
+        cardContainer.style.display = 'none'
+    }
     fetch('/get-spa-customer-suggestions?input=' + input)
         .then(response => response.json())
         .then(data => {
@@ -258,3 +262,32 @@ document.addEventListener('click', function(event) {
 function getCustomerId(){
     document.getElementById('customer_id').value = ID;
 }
+
+// Thêm sự kiện để nghe checkbox
+document.getElementById('is_odd_customer').addEventListener('change', function() {
+    const formGroup = document.getElementById('new_customer_form');
+    const existed_customer = document.getElementById('existed_customer')
+    const newCustomerId = document.getElementById('new_customer_id');
+    const newCustomerName = document.getElementById('new_customer_name');
+    const newCustomerPhone = document.getElementById('new_customer_phone');
+    const newCustomerTreatment = document.getElementById('new_customer_treatment')
+    const cardContainer = document.getElementById('customer-card-container');
+    cardContainer.style.display = 'none'
+    const customerID = document.getElementById('customer_id')
+    if (this.checked) {
+        formGroup.style.display = 'block';
+        existed_customer.style.display = 'none';
+        newCustomerId.setAttribute('required', 'required');
+        newCustomerName.setAttribute('required', 'required');
+        newCustomerPhone.setAttribute('required', 'required');
+        customerID.removeAttribute('required');
+    } else {
+        formGroup.style.display = 'none';
+        existed_customer.style.display = 'block';
+        newCustomerId.removeAttribute('required');
+        newCustomerName.removeAttribute('required');
+        newCustomerPhone.removeAttribute('required');
+        newCustomerTreatment.removeAttribute('required');
+        customerID.setAttribute('required', 'required');
+    }
+});
