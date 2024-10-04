@@ -53,6 +53,12 @@ def common_response_6():
 def common_response_7():
     create_card_url = url_for('routes.create_card')
     return {'create_card_url': create_card_url}
+
+@routes.context_processor
+def common_response_10():
+    booking_url = url_for('routes.booking')
+    return {'booking_url': booking_url}
+
 @routes.route('/dash-board')
 @login_required
 def dash_board():

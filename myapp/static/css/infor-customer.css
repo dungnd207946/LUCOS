@@ -1,8 +1,10 @@
 .side-bar .navigation .btnView {
-    background: #fff;
-    color: #333;
+    color: #fff;
+    background: #0088FF;
 }
-
+.side-bar .navigation .dropdownText1{
+    color: #0088FF;
+}
 .bang {
     /*margin-top: 5%;*/
     padding: 10px 30px 30px 30px ;

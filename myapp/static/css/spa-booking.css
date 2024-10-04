@@ -1,7 +1,12 @@
 .side-bar .navigation .btnSpa {
-    background: #fff;
-    color: #333;
+    color: #fff;
+    background: #0088FF;
 }
+.side-bar .navigation .dropdownText6{
+    color: #0088FF;
+}
+
+
 .main{
     display: flex;
     justify-content: space-between;

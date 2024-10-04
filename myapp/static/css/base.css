@@ -20,47 +20,66 @@ body {
     top: 0;
     left: 0;
     bottom: 0;
-    padding: 1.5rem 1.5rem;
+    padding: 0 0;
     z-index: 102;
-    background: linear-gradient(to bottom, #1CB5E0, #000046);
+    /*background: linear-gradient(to bottom, #1CB5E0, #000046);*/
+    background: #182537;
     transition: width 0.3s;
 }
 .side-bar .logo {
     font-size: 1.5rem;
     cursor: pointer;
     color: #fff;
+    margin-left: 10px;
+}
+.side-bar .navigation {
+    position: relative;
 }
 .side-bar .navigation button {
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    width: 100%;
+    width: 96%;
     height: 50px;
     background:transparent;
-    border: 1.5px solid #fff;
-    border-radius: 6px;
+    border: none;
+    border-radius: 3px;
     outline: none;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 1rem;
     color: #fff;
-    font-weight: 500;
-    margin-top: 20px;
+    font-weight: 400;
+    margin: 4px;
     transition: 0.5s;
+    box-sizing: border-box;
 }
 .side-bar button:hover{
-    background: #fff;
-    color: #333;
+    background: rgba(255, 255, 255, 0.1);
+    /*color: #333;*/
 }
+
 .side-bar button i {
     width: 20px;
     margin-right: 12px; /* Adjust spacing between icon and text */
     margin-left: 10px;
+}
+.side-bar .icon-collapse {
+    color: #fff;
+    font-size: 26px;
+    /*transition: transform .2s linear;*/
+    margin-right: 4px;
+    transition: transform 0.5s ease;
+}
+.rotate-down {
+    transform: rotate(90deg);  /* Xoay 90 độ để hướng xuống */
 }
 
 .side-bar .menuExpand {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 0;
+    height: 55px;
 }
 .side-bar .menuExpand button {
     display: flex;
@@ -73,12 +92,14 @@ body {
     width: 40px; /* Đặt kích thước button */
     height: 40px;
     padding: 0;
+    outline: none;
 }
-
+.side-bar .menuExpand img{
+    filter: brightness(2);
+}
 .side-bar .menuExpand button i {
     color: white;
     font-size: 24px;
-    /*padding: 0.5rem;*/
 }
 .side-bar .menuExpand button:hover{
     cursor: pointer;
@@ -87,27 +108,42 @@ body {
 /*Thu nhỏ cột side bar*/
 .side-bar.collapsed {
     width: 60px; /* Kích thước khi thu nhỏ */
-    padding: 1.5rem 0;
+    padding: 0 0;
+}
+.side-bar.collapsed .menuExpand{
+    /*padding: 1rem 0;*/
+    height: 55px;
 }
 .side-bar.collapsed .menuExpand button {
     position: absolute;
     left: 10px;
 }
-.side-bar.collapsed span {
+.side-bar.collapsed .ListBarText {
     display: none; /* Ẩn văn bản khi thu nhỏ */
+}
+.side-bar.collapsed svg{
+    display: none;
 }
 .side-bar.collapsed .navigation button {
     border: none;
     justify-content: center;
+    width: 85%;
 }
 .side-bar.collapsed .navigation button i {
-    /*margin-right: 0;*/
-    /*margin-left: 0;*/
+    margin-right: 0;
+    margin-left: 0;
 }
 
 .side-bar.collapsed ~ .screen {
     margin-left: 60px;
     width: calc(100% - 60px);
+}
+
+.menuDivider {
+    border: 0;
+    margin: 0;
+    border-top: 1px solid #15202c;
+    border-bottom: 1px solid #263d53;
 }
 .screen{
     display: flex;
@@ -220,4 +256,40 @@ body {
    min-height: calc(100vh - 80px) ;
 }
 
-/* Media Queries */
+/*drop down*/
+.navbar .dropdown {
+    position: relative;
+    display: block;
+}
+
+.dropdown-content {
+    /*display: none;*/
+    position: relative;
+    background-color: transparent;
+    overflow: hidden;
+    max-height: 0;  /* Bắt đầu với chiều cao 0 */
+    transition: max-height 0.3s ease-out;  /* Hiệu ứng kéo trượt */
+}
+
+.dropdown-content button {
+    color: black;
+    /*padding: 12px 20px;*/
+    padding-left: 42px;
+    text-decoration: none;
+    display: block;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown.open .dropdown-content {
+    /*display: block;*/
+    max-height: 200px; /* Chiều cao tối đa của dropdown khi mở */
+    transition: max-height 0.3s ease-in-out;
+}
+
+.side-bar.collapsed .dropdown-content button{
+    padding-left: 10px;
+}

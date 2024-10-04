@@ -1,3 +1,11 @@
+.side-bar .navigation .btnTask {
+    color: #fff;
+    background: #0088FF;
+}
+.side-bar .navigation .dropdownText4{
+    color: #0088FF;
+}
+
 #suggestions {
     max-height: 200px; /* Chiều cao tối đa của danh sách gợi ý */
     overflow-y: auto; /* Hiển thị thanh cuộn nếu nội dung quá dài */

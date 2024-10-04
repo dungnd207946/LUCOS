@@ -1,6 +1,9 @@
 .side-bar .navigation .btnSpa {
-    background: #fff;
-    color: #333;
+    color: #fff;
+    background: #0088FF;
+}
+.side-bar .navigation .dropdownText5{
+    color: #0088FF;
 }
 
 .bang {
