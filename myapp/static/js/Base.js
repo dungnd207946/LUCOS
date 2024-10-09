@@ -26,7 +26,11 @@ document.querySelectorAll('.btnView, .btnTask, .btnSpa, .btnReport').forEach(but
 document.querySelectorAll('.dropdown').forEach(function(button) {
     button.addEventListener('click', function() {
         const icon = this.querySelector('.icon-collapse');  // Lấy dấu SVG trong button hiện tại
-
+        document.querySelectorAll('.icon-collapse').forEach(function(ic) {
+            if(ic != icon){
+                ic.classList.remove('rotate-down');
+            }
+        });
 
         if (icon.classList.contains('rotate-down')) {
             icon.classList.remove('rotate-down');

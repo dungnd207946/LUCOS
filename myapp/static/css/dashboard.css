@@ -23,6 +23,10 @@ body {
     height: 400px;
     width: 100%;
 }
+#revenueChart{
+    max-height: 100%;
+    max-width: 100%;
+}
 .row {
     display: flex;
     justify-content: space-around;
