@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from myapp.templates.config import db
 from myapp import app
-import datetime
+from datetime import datetime
 #import pandas as pd
 
 class Khach_hang(db.Model):
@@ -162,6 +162,8 @@ class SpaCard(db.Model):
     paid               = Column(Integer)
     debt               = Column(Integer, nullable=False)
     note               = Column(String(500))
+    date               = Column(String(50), default=lambda: datetime.now().strftime('%d/%m/%Y %H:%M'))
+
     # relationship
     customer           = relationship("Khach_hang", foreign_keys=[customer_id])
     treatments         = relationship("Treatment", secondary='card_treatment', back_populates='cards', lazy=True)

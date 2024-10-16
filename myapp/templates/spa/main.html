@@ -121,30 +121,6 @@
 
     </div>
     <script>
-        function checkBtn(){
-            console.log("Submit")
-        }
-        // Hàm chọn cách báo cáo
-        function toggleReportType() {
-            var reportType = document.querySelector('input[name="reportType"]:checked').value;
-            var datePicker = document.getElementById('datePicker');
-            var monthPicker = document.getElementById('monthPicker');
-            var dateInput = document.getElementById('date');
-            var monthInput = document.getElementById('month');
-
-            if (reportType === 'day') {
-                datePicker.classList.remove('hidden');
-                monthPicker.classList.add('hidden');
-                dateInput.required = true;
-                monthInput.required = false;
-            } else if (reportType === 'month') {
-                datePicker.classList.add('hidden');
-                monthPicker.classList.remove('hidden');
-                dateInput.required = false;
-                monthInput.required = true;
-            }
-        }
-
         function confirmDelete() {
             return confirm('Xác nhận xóa khách hàng này?');
         }

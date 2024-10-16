@@ -1,0 +1,48 @@
+{% extends 'Base.html' %}
+{% block title %}Tiền tour theo nhân viên{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/report/mask_report.css">
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <!-- Title -->
+    <div class="text-center mb-4">
+        <h4 class="font-weight-bold">Báo cáo sử dụng mặt nạ</h4>
+    </div>
+
+    <!-- Time range selection -->
+    <form method="post" action="{{ url_for('routes.mask_report') }}">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                    <label for="start-date" class="mr-2">Khoảng thời gian:</label>
+                    <input type="date" class="form-control mr-2 w-auto" id="start-date" name="start_date" value="{{start_date}}" required>
+                    <label for="end-date" class="mr-2">đến</label>
+                    <input type="date" class="form-control mr-2 w-auto" id="end-date" name="end_date" value="{{end_date}}" required>
+                    <button class="btn btn-primary"><i class="fas fa-filter"></i>  Lọc</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Table -->
+    <div class="table-responsive" style="display: flex; justify-content: center">
+        <table class="table table-bordered table-striped table-hover" style="width: 486px">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Tên mặt nạ</th>
+                    <th>Số lượng sử dụng</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in mask_reports%}
+                <tr>
+                    <td style="width: 200px">{{m.mask_name}}</td>
+                    <td>{{m.mask_quantity}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -151,18 +151,4 @@ label {
 .row-selected {
     background-color: rgba(128, 128, 128, 0.4); /* Màu nền khi hàng được chọn */
 }
-/* Định nghĩa animation cho nút action */
-@keyframes fade-in {
-  from {
-       transform: translateX(-100%);
-    opacity: 0; /* Bắt đầu từ opacity = 0 */
-  }
-  to {
-      transform: translateX(0);
-    opacity: 1; /* Kết thúc với opacity = 1 */
-  }
-}
-/* Áp dụng animation cho phần tử */
-.fade-in {
-  animation: fade-in 0.5s ease-out; /* Thời gian 0.5s, dễ dàng ra ngoài */
-}
+

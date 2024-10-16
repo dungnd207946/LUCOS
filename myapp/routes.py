@@ -1,18 +1,20 @@
-from flask import Blueprint, url_for, request, render_template, flash, redirect, jsonify, session
-from flask_login import login_required, current_user
-from sqlalchemy import desc, and_
-from flask_sqlalchemy import pagination
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import aliased
-from myapp.models import Khach_hang, Task_Customer, User_account, SpaCard, Treatment, SpaBooking, Card_Treatment, Mask, Card_Staff, Skin_type, Customer_skin
-from myapp.API.services import delete, load_customer, update_day_without_buying
-from myapp.Services.task import getTaskByCustomerID_StaffID, get_table_task_for_admin, getALlTask, get_table_task_for_only_staff, check_task_outdated
+from flask                   import Blueprint, url_for, request, render_template, flash, redirect, jsonify, session
+from flask_login             import login_required, current_user
+from sqlalchemy              import desc, and_
+from flask_sqlalchemy        import pagination
+from sqlalchemy.exc          import SQLAlchemyError
+from sqlalchemy.orm          import aliased
+from myapp.models            import Khach_hang, Task_Customer, User_account, SpaCard, Treatment, SpaBooking, Card_Treatment, Mask, Card_Staff, Skin_type, Customer_skin
+from myapp.API.services      import delete, load_customer, update_day_without_buying
+from myapp.Services.task     import getTaskByCustomerID_StaffID, get_table_task_for_admin, getALlTask, get_table_task_for_only_staff, check_task_outdated
 from myapp.Services.customer import get_order, get_detail_customer, getAllCustomers, getCustomerByCard, getGroupCustomerList, getAreaCustomerList, onlySpaCustomer
-from myapp.Services.user import getStaff
-from myapp.Services.spa import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, getBookingByCardID, getSpaCardCustomer, getAllTreatments
-from myapp.templates.config import db
-from myapp.auth import admin_required, dev_required, prevent_guest
-from datetime import datetime
+from myapp.Services.user     import getStaff
+from myapp.Services.spa      import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, getBookingByCardID, getSpaCardCustomer, getAllTreatments, getAllBookingData, getCustomerCardDetail
+from myapp.Services.report   import countMaskFromBooking, getRevenueByStaff
+from myapp.templates.config  import db
+from myapp.auth              import admin_required, dev_required, prevent_guest
+from datetime                import datetime, timedelta
+
 routes = Blueprint('routes', __name__, static_folder='static', template_folder='templates')
 
 @routes.route('/')
@@ -272,28 +274,7 @@ def booking():
     allStaff = getStaff()
     allTreatment = getAllTreatments()
     allMask = Mask.query.all()
-    result = (db.session.query(SpaBooking, User_account, SpaCard, Khach_hang, Treatment, Mask)
-               .join(User_account, SpaBooking.staff_id == User_account.id)
-               .join(SpaCard, SpaBooking.card_id == SpaCard.id)
-               .join(Khach_hang, SpaCard.customer_id == Khach_hang.id)
-               .join(Treatment, SpaBooking.treatment_id == Treatment.id)
-               .join(Mask, SpaBooking.mask_id == Mask.id)
-               .all())
-    booking_data = [
-                    {'id'             : booking.id,
-                     'staff_id'       : staff.id,
-                     'staff_name'     : staff.full_name,
-                     'treatment_name' : treatment.name,
-                     'duration'       : treatment.duration,
-                     'customer_name'  : customer.ten_khach_hang,
-                     'date'           : booking.date,
-                     'mask_id'        : mask.id,
-                     'mask'           : mask.mask_name,
-                     'note'           : booking.note,
-                     'customer_demand': booking.customer_demand,
-                     'status'         : booking.status,
-                     'is_new_customer': booking.is_new_customer}
-                    for booking, staff, card, customer, treatment, mask in result]
+    booking_data = getAllBookingData()
 
     staff_json = [{'id': s.id,
                    'name': s.full_name}
@@ -396,3 +377,43 @@ def spa_detail(card_id):
                            treatments   = treatments,
                            booking      = all_bookings,
                            update_modal = update_modal)
+
+@routes.context_processor
+def customer_report_url():
+    customer_report = url_for('routes.customer_report')
+    return dict(customer_report_url=customer_report)
+@routes.route('/report/customer_report', methods=['GET'])
+def customer_report():
+    customer_report = getCustomerCardDetail()
+    return render_template('report/customer_report.html', customer_report = customer_report)
+
+@routes.route('/report/mask_report', methods=['GET'])
+def mask_report():
+    today = datetime.today()
+    today = today + timedelta(days=1)
+    start_date_default = today - timedelta(days=30)  # 30 ngày trước
+    end_date_default = today
+    start_date_default_str = start_date_default.strftime('%Y-%m-%d')
+    end_date_default_str = end_date_default.strftime('%Y-%m-%d')
+
+    mask_reports = countMaskFromBooking(start_date_default_str, end_date_default_str)
+    return render_template('report/mask_report.html',
+                           mask_reports = mask_reports,
+                           start_date   = start_date_default_str,
+                           end_date     = end_date_default_str)
+
+@routes.route('/report/staff_revenue_report', methods=['GET'])
+def staff_revenue_report():
+    today = datetime.today()
+    today = today + timedelta(days=1)
+    start_date_default = today - timedelta(days=30)  # 30 ngày trước
+    end_date_default = today
+    start_date_default_str = start_date_default.strftime('%Y-%m-%d')
+    end_date_default_str = end_date_default.strftime('%Y-%m-%d')
+
+    staff_revenue_reports = getRevenueByStaff(start_date_default_str, end_date_default_str)
+    return render_template('report/staff_revenue_report.html',
+                           staff_revenue_reports = staff_revenue_reports,
+                           start_date            = start_date_default_str,
+                           end_date              = end_date_default_str
+                           )

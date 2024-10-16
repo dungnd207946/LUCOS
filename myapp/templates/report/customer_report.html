@@ -1,0 +1,80 @@
+{% extends 'Base.html' %}
+{% block title %}Tiền tour theo nhân viên{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/report/customer_report.css">
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <!-- Title -->
+    <div class="text-center mb-4">
+        <h4 class="font-weight-bold">Báo cáo tình trạng khách hàng</h4>
+    </div>
+
+    <!-- Time range selection -->
+    <form method="post" action="">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                    <label for="number_left" class="mr-2">Số buổi còn lại dưới:</label>
+                    <input type="number" class="form-control mr-2 w-auto" id="number_left" name="number_left">
+                    <button class="btn btn-primary"><i class="fas fa-filter"></i>  Lọc</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form id="customerForm" method="POST" action="{{ url_for('api.handle_actions') }}">
+        <div class="action-box" style="padding-bottom: 10px">
+            <button type="button" class="btn btn-default"><i class="bi bi-three-dots-vertical"></i></button>
+            <div id="button-box" class="btn-box" style="display: none;">
+                <button id="deleteButton" type="submit" name="action" value="delete" class="btn btn-danger" onclick="return confirmDelete()" >Xóa</button>
+                <button id="createTask" type="submit" name="action" value="createTask" class="btn btn-primary">Thêm task</button>
+            </div>
+        </div>
+
+    <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="checkbox" ><input id="allCheckBox" class="checkbox-custom" type="checkbox"></th>
+                        <th>Tên khách hàng</th>
+                        <th>Mã thẻ</th>
+                        <th>Tên liệu trình</th>
+                        <th>Tổng số buổi</th>
+                        <th>Còn lại</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in customer_report %}
+                        <tr class="value" data-user-id="{{ c.id }}" data-card-id="{{ c.card_id }}">
+                            <td >
+                                <input class="eachCheckBox checkbox-custom" type="checkbox" name="selected_customers" value="{{ c.id }}" >
+                            </td>
+                            <td id="rowSpan" rowspan="1">{{ c.ten_khach_hang }}</td>
+                            <td rowspan="1">{{ c.card_id }}</td>
+                            <td>{{ c.name }}</td>
+                            <td>{{ c.total_time }}</td>
+                            {% if c.total_time - c.time_used <= 5 %}
+                                <td class="FillColor">{{ c.total_time - c.time_used }}</td>
+                            {% else %}
+                                <td>{{ c.total_time - c.time_used }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    <!-- In phần khách hàng cuối cùng -->
+                    <tr>
+                        <td rowspan="{{ customer_rowspan }}">{{ previous_customer }}</td>
+                        <td rowspan="{{ card_rowspan }}">{{ previous_card }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<script type="module" src="../static/js/report/customer_report.js"></script>
+<script>
+    function confirmDelete() {
+        return confirm('Xác nhận xóa khách hàng này?');
+    }
+</script>
+{% endblock %}

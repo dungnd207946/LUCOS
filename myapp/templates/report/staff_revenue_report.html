@@ -1,0 +1,52 @@
+{% extends 'Base.html' %}
+{% block title %}Doanh thu nhân viên{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="/static/css/report/staff_revenue_report.css">
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <!-- Title -->
+    <div class="text-center mb-4">
+        <h4 class="font-weight-bold">Báo cáo doanh thu Spa theo nhân viên</h4>
+    </div>
+
+    <!-- Time range selection -->
+    <form method="post" action="{{ url_for('api.staff_revenue_report') }}">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                    <label for="start-date" class="mr-2">Khoảng thời gian:</label>
+                    <input type="date" class="form-control mr-2 w-auto" id="start-date" name="start_date" value="{{start_date}}" required>
+                    <label for="end-date" class="mr-2">đến</label>
+                    <input type="date" class="form-control mr-2 w-auto" id="end-date" name="end_date" value="{{end_date}}" required>
+                    <button class="btn btn-primary"><i class="fas fa-filter"></i>  Lọc</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Tên nhân viên</th>
+                    <th>Doanh thu thẻ</th>
+                    <th>Doanh thu khách trải nghiệm</th>
+                    <th>Tổng doanh thu</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in staff_revenue_reports%}
+                <tr>
+                    <td>{{s.staff_name}}</td>
+                    <td>{{"{:,}".format(s.card_revenue)}}</td>
+                    <td>{{"{:,}".format(s.experience_revenue)}}</td>
+                    <td>{{"{:,}".format(s.total_revenue)}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

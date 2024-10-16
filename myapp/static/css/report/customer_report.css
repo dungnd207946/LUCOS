@@ -1,0 +1,16 @@
+.side-bar .navigation .btnReport {
+    color: #fff;
+    background: #0088FF;
+}
+.side-bar .navigation .dropdownText7{
+    color: #0088FF;
+}
+.checkbox-custom {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+}

@@ -1,18 +1,20 @@
-from flask import Blueprint, url_for, request, render_template, flash, redirect, jsonify, session
-from flask_login import login_required, current_user
-from sqlalchemy import desc, and_
-from flask_sqlalchemy import pagination
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import aliased
-from myapp.models import Khach_hang, Task_Customer, User_account, SpaCard, Treatment, SpaBooking, Card_Treatment, Mask, Card_Staff, Skin_type, Customer_skin
-from myapp.API.services import delete, load_customer, update_day_without_buying
-from myapp.Services.task import getTaskByCustomerID_StaffID, get_table_task_for_admin, getALlTask, get_table_task_for_only_staff, check_task_outdated
+from flask                   import Blueprint, url_for, request, render_template, flash, redirect, jsonify, session
+from flask_login             import login_required, current_user
+from sqlalchemy              import desc, and_
+from flask_sqlalchemy        import pagination
+from sqlalchemy.exc          import SQLAlchemyError
+from sqlalchemy.orm          import aliased
+from myapp.Services.report   import countMaskFromBooking, getRevenueByStaff
+from myapp.models            import Khach_hang, Task_Customer, User_account, SpaCard, Treatment, SpaBooking, Card_Treatment, Mask, Card_Staff, Skin_type, Customer_skin
+from myapp.API.services      import delete, load_customer, update_day_without_buying
+from myapp.Services.task     import getTaskByCustomerID_StaffID, get_table_task_for_admin, getALlTask, get_table_task_for_only_staff, check_task_outdated
 from myapp.Services.customer import get_order, get_detail_customer, getAllCustomers, getCustomerByCard, getGroupCustomerList, getAreaCustomerList, onlySpaCustomer
-from myapp.Services.user import getStaff
-from myapp.Services.spa import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, getBookingByCardID, getSpaCardCustomer
-from myapp.templates.config import db
-from myapp.auth import admin_required, dev_required, prevent_guest
-from datetime import datetime
+from myapp.Services.user     import getStaff
+from myapp.Services.spa      import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, \
+    getBookingByCardID, getSpaCardCustomer, getCustomerCardDetail
+from myapp.templates.config  import db
+from myapp.auth              import admin_required, dev_required, prevent_guest
+from datetime                import datetime
 
 api = Blueprint('api', __name__, static_folder='static', template_folder='templates')
 
@@ -43,7 +45,7 @@ def customer_filter(): #Đang xảy ra lỗi: Chuyển trang chưa kết hợp �
         # khach_hang_filtered = filtered.items
         total_customers = len(filtered_query.all())
         print(total_customers)
-        return render_template('customer/infor-customer.html',
+        return render_template('customer/infor-customer_report.html',
                                khach_hang               = filtered_query,
                                source_data              = source_data,
                                nhom_kh_list_sorted      = nhom_kh_list_sorted,
@@ -175,7 +177,7 @@ def create_multi_task():
                 print(e)  # In lỗi ra console để debug
 
         flash('Thêm task cho các khách hàng thành công!', 'success')
-        return redirect(url_for('routes.infor_khach_hang'))
+        return redirect(url_for('routes.task'))
 
 @api.route('/task', methods=['POST'])
 @login_required
@@ -352,18 +354,18 @@ def create_card():
             note         = request.form['note']
             if card_id == '':
                 new_card = SpaCard(
-                                   customer_id=customer_id,
-                                   total_price=total_price,
-                                   paid=paid,
-                                   debt=debt,
-                                   note=note)
+                                   customer_id = customer_id,
+                                   total_price = total_price,
+                                   paid        = paid,
+                                   debt        = debt,
+                                   note        = note)
             else:
-                new_card     = SpaCard(id          = card_id,
-                                       customer_id = customer_id,
-                                       total_price = total_price,
-                                       paid        = paid,
-                                       debt        = debt,
-                                       note        = note)
+                new_card = SpaCard(id          = card_id,
+                                   customer_id = customer_id,
+                                   total_price = total_price,
+                                   paid        = paid,
+                                   debt        = debt,
+                                   note        = note)
             db.session.add(new_card)
             db.session.commit()
             new_card_staff = Card_Staff(card_id  = new_card.id,
@@ -539,3 +541,45 @@ def update_card(id):
             flash('Cập nhật thông tin thanh toán thất bại! Vui lòng thử lại sau.', 'error')
             print(e)  # In lỗi ra console để debug
         return redirect(url_for('routes.spa_detail', card_id=id))
+
+@api.route('/report/customer_report', methods=['POST'])
+@login_required
+def customer_report():
+    if request.method == 'POST':
+        number_left = request.form.get('number_left')
+        report_data = getCustomerCardDetail(number_left)
+        return render_template('report/customer_report.html', customer_report = report_data)
+
+@api.route('/report/mask_report', methods=['POST'])
+@login_required
+def mask_report():
+    if request.method == 'POST':
+        try:
+            start_date_str = request.form.get('start_date')
+            end_date_str = request.form.get('end_date')
+            mask_reports = countMaskFromBooking(start_date_str, end_date_str)
+            return render_template('report/mask_report.html',
+                                   mask_reports=mask_reports,
+                                   start_date=start_date_str,
+                                   end_date=end_date_str)
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash('Lọc thất bại! Vui lòng thử lại.', 'error')
+            print(e)  # In lỗi ra console  debug
+@api.route('/report/staff_revenue_report', methods=['POST'])
+@login_required
+def staff_revenue_report():
+    if request.method == 'POST':
+        try:
+            start_date_str = request.form.get('start_date')
+            end_date_str = request.form.get('end_date')
+            staff_revenue_reports = getRevenueByStaff(start_date_str, end_date_str)
+            return render_template('report/staff_revenue_report.html',
+                               staff_revenue_reports=staff_revenue_reports,
+                               start_date=start_date_str,
+                               end_date=end_date_str
+                               )
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash('Lọc thất bại! Vui lòng thử lại.', 'error')
+            print(e)  # In lỗi ra console  debug
