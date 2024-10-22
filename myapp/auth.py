@@ -65,7 +65,7 @@ def logout_page():
     return redirect(url_for('auth.login_page'))
 
 @auth.route('/register-box', methods=['GET', 'POST'])
-@dev_required
+# @dev_required
 # @admin_required
 def register_page():
     message = ''

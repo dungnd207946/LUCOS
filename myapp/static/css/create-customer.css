@@ -15,35 +15,137 @@
     color: #333;
     border-radius: 10px;
     padding: 30px 40px;
-    max-width: 600px;
-    margin-top: 100px!important;
+    max-width: 992px;
+    margin-top: 80px !important;
 }
 
-h1 {
+h3 {
     text-align: center;
-    color: dodgerblue;
+    color: #344767 ;
+    font-weight: 700;
 }
 
 .form-group {
     margin-bottom: 1.5rem;
 }
-
+.form-group .custom-label{
+    font-weight: 700;
+    color: #344767;
+}
 .btn {
-    width: 10em;
-    height: 2.5rem;
-    background: cadetblue;
-    border: none;
-    outline: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    cursor: pointer;
-    font-size: 1rem;
-    color: #fff;
-    font-weight: 600;
     transition: background-color 0.2s ease;
+    border-radius: 5px;
 }
 
 /* nút submit*/
 .btn:hover {
     background-color: lightseagreen;
+}
+
+
+.image-input {
+    position: relative;
+    width: 80%;
+    height: 0;
+    padding-bottom: 80%; /* Tạo tỷ lệ 1:1 */
+    background-color: rgba(128, 128, 128, 0.5); /* Màu xám mờ */
+    border-radius: 8px; /* Bo góc */
+    overflow: hidden;
+    cursor: pointer; /* Thay đổi con trỏ khi hover */
+}
+
+.image-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Giữ nguyên tỷ lệ ảnh */
+    display: none; /* Ẩn ảnh preview mặc định */
+    border-radius: 8px; /* Bo góc cho ảnh preview */
+}
+
+.camera-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px; /* Kích thước icon */
+    color: white; /* Màu sắc icon */
+    display: none; /* Ẩn icon máy ảnh mặc định */
+
+}
+.choose-file-text {
+    position: absolute;
+    /*bottom: 10px;*/
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white; /* Màu chữ */
+    font-size: 18px; /* Kích thước chữ */
+    font-weight: 500;
+    display: none; /* Ẩn chữ "Chọn tệp" mặc định */
+}
+.image-input:hover .camera-icon,
+.image-input:hover .choose-file-text{
+    display: block; /* Hiện icon máy ảnh khi hover */
+}
+
+.image-input:hover {
+    background-color: rgba(192, 192, 192, 0.5); /* Tối ưu màu nền khi hover */
+}
+
+/*Custom radio button*/
+
+/* Ẩn radio button gốc */
+.custom-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Khi được chọn: thêm viền và màu nền */
+.custom-radio:checked {
+    border-color: #344767;
+    background-color: #344767;
+
+}
+
+/* Tạo dấu chấm tròn bên trong khi được chọn */
+.custom-radio::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    visibility: hidden;
+}
+
+/* Khi được chọn, hiển thị dấu chấm */
+.custom-radio:checked::after {
+    visibility: visible;
+}
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.form-check-label{
+    margin-left: 7px;
+    margin-top: 3px;
 }

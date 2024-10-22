@@ -41,14 +41,9 @@
     background: white;
     border-radius:5px ;
     padding-top: 20px;
+    width: 70%;
 }
-.thong-tin-ca-nhan {
-    display: flex;
-    justify-content: space-between;
-    width: 810px;
-    vertical-align: top;
-    background: white;
-}
+
 h4{
     display: block;
     padding-bottom: 20px;
@@ -57,11 +52,7 @@ h4{
     font-size: 20px;
     font-weight: bold;
 }
-.left-table, .right-table {
-    display: inline-block;
-    width: 400px;
-    padding: 10px;
-}
+
 .key{
     width: 180px;
     padding: 10px;
@@ -99,4 +90,33 @@ h4{
 }
 .product-table{
      border-bottom: 2px solid lightgray;
+}
+
+/*Cập nhật mới*/
+.image-input {
+    position: relative;
+    width: 80%;
+    height: 0;
+    padding-bottom: 80%; /* Tạo tỷ lệ 1:1 */
+    background-color: rgba(128, 128, 128, 0.5); /* Màu xám mờ */
+    border-radius: 8px; /* Bo góc */
+    overflow: hidden;
+    cursor: pointer; /* Thay đổi con trỏ khi hover */
+}
+
+.image-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Giữ nguyên tỷ lệ ảnh */
+    border-radius: 8px; /* Bo góc cho ảnh preview */
+}
+label{
+    width: 150px;
+}
+.form-group .custom-label{
+    font-weight: 700;
+    color: #344767;
 }

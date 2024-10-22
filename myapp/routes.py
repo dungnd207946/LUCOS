@@ -103,7 +103,8 @@ def detail_khach_hang(khach_hang_id):
                            detail                      = detail,
                            orders                      = orders,
                            product_by_order            = product_by_order,
-                           amount_product_per_order    = amount_product_per_order)
+                           amount_product_per_order    = amount_product_per_order,
+                           )
 
 @routes.route('/khach-hang/them-khach-hang', methods=['GET'])
 @login_required

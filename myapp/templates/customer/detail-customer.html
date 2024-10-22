@@ -26,47 +26,62 @@
 
         <div class="thong-tin-khach-hang">
             <h4>Thông tin cá nhân</h4>
-            <div class="thong-tin-ca-nhan">
-                <div class="left-table">
-                    <table>
-                        <tr>
-                            <td class="key"><strong>Mã khách hàng:</strong></td>
-                            <td class="value">{{user.id}}</td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Số điện thoại:</strong></td>
-                            <td class="value">{{user.so_dien_thoai}}</td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Khu vực:</strong></td>
-                            <td class="value">{{user.khu_vuc}}</td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Ngày cuối mua hàng:</strong></td>
-                            <td class="value">{{user.last_buying_day}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="right-table">
-                    <table>
-                        <tr>
-                            <td class="key"><strong>Nhóm khách hàng:</strong></td>
-                            <td class="value">{{user.nhom_khach_hang}}</td>
+            <div class="create container mt-5">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="custom-label" for="image-preview">Ảnh </label>
+                            <div class="image-input" id="image-input" onclick="document.getElementById('profile_image').click()">
+                                <img id="image-preview" class="image-preview" src="{{user.profile_image}}" alt="Ảnh đại diện">
+                            </div>
+                        </div>
+                    </div>
 
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Giới tính:</strong></td>
-                            <td class="value">---</td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Email:</strong></td>
-                            <td class="value">{{user.email}}</td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Điểm tích lũy:</strong></td>
-                            <td class="value">{{user.point}}</td>
-                        </tr>
-                    </table>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="custom-label">Giới tính: </label>
+                            <span>{{user.gender}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-label" >Số điện thoại: </label>
+                            <span >{{user.so_dien_thoai}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-label">Khu vực: </label>
+                            <span>{{user.khu_vuc}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-label">Địa chỉ: </label>
+                            <span>{{user.dia_chi}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-label" >Tình trạng da: </label>
+                            <span>{{user.skin_property}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="custom-label" >Mã khách hàng: </label>
+                            <span>{{user.id}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-label">Email: </label>
+                            <span>{{user.email}}</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="custom-label">Nhóm khách hàng: </label>
+                            <span>{{user.nhom_khach_hang}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-label" >Ngày sinh: </label>
+                            <span>{{user.ngay_sinh}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-label" >Khả năng chi trả: </label>
+                            <span>{{user.payment_ability}}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -6,22 +6,51 @@
 {% endblock %}
 {% block content %}
     <div class="create container mt-5">
-        <form id="create-customer-form" method="post" action="{{ url_for('api.create_customer') }}">
-            <h1 class="text-center text-primary mb-4">Thêm khách hàng mới</h1>
+        <form id="create-customer-form" enctype="multipart/form-data"  method="post" action="{{ url_for('api.create_customer') }}">
+            <h3 class="text-center mb-4">Thông tin cá nhân</h3>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <label for="ten_khach_hang">Tên khách hàng*</label>
+                        <label class="custom-label" for="profile_image">Ảnh đại diện</label>
+                        <div class="image-input" id="image-input" onclick="document.getElementById('profile_image').click()">
+                            <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" onchange="previewImage()" style="display: none">
+                            <img id="image-preview" class="image-preview" alt="Ảnh đại diện">
+                            <div class="camera-icon" >
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <span class="choose-file-text" onclick="document.getElementById('profile_image').click()">Chọn tệp</span>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="custom-label">Giới tính</label>
+                        <div class="form-check">
+                            <input class="form-check-input custom-radio" type="radio" name="gender" id="male" value="Nam" checked>
+                            <label class="form-check-label" for="male">Nam</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input custom-radio" type="radio" name="gender" id="female" value="Nữ">
+                            <label class="form-check-label" for="female">Nữ</label>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="custom-label" for="ten_khach_hang">Tên khách hàng*</label>
                         <input id="ten_khach_hang" type="text" class="form-control" name="name" required>
                         <div class="invalid-feedback">Vui lòng nhập tên khách hàng.</div>
                     </div>
                     <div class="form-group">
-                        <label for="so_dien_thoai">Số điện thoại*</label>
+                        <label class="custom-label" for="so_dien_thoai">Số điện thoại*</label>
                         <input id="so_dien_thoai" type="text" class="form-control" name="phone_number" required>
                         <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
                     </div>
                     <div class="form-group">
-                        <label for="khu_vuc">Khu vực*</label>
+                        <label class="custom-label" for="khu_vuc">Khu vực*</label>
                         <select id="khu_vuc" class="form-control my-select2" name="khu_vuc" required>
 <!--                            <option value=" " disabled selected hidden>Tỉnh thành phố - Quận huyện</option>-->
                             <option value="Khác">Khác</option>
@@ -30,11 +59,11 @@
                         <div class="invalid-feedback">Vui lòng chọn khu vực.</div>
                     </div>
                     <div class="form-group">
-                        <label for="address">Địa chỉ</label>
+                        <label class="custom-label" for="address">Địa chỉ</label>
                         <input id="address" type="text" class="form-control" name="address">
                     </div>
                     <div class="form-group">
-                        <label for="skin">Tình trạng da*</label>
+                        <label class="custom-label" for="skin">Tình trạng da*</label>
                         <select id="skin" class="form-control my-select2" name="skin" required>
                             <option value="" disabled selected hidden>Chọn loại da...</option>
                             {% for s in skin %}
@@ -43,44 +72,40 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <label for="id">Mã khách hàng*</label>
+                        <label class="custom-label" for="id">Mã khách hàng*</label>
                         <input id="id" type="text" class="form-control" name="id" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label class="custom-label" for="email">Email</label>
                         <input id="email" type="email" class="form-control" name="email">
                     </div>
 
                     <div class="form-group">
-                        <label for="nhom_khach_hang">Nhóm khách hàng</label>
+                        <label class="custom-label" for="nhom_khach_hang">Nhóm khách hàng</label>
                         <select id="nhom_khach_hang" class="form-control" name="group">
                             <option value="Bán lẻ">Bán lẻ</option>
                             <option value="Bán sỉ">Bán sỉ</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="ngay_sinh">Ngày sinh</label>
+                        <label class="custom-label" for="ngay_sinh">Ngày sinh</label>
                         <input id="ngay_sinh" type="date" class="form-control" name="birth_date">
                     </div>
                     <div class="form-group">
-                        <label for="payment-ability">Khả năng chi trả</label>
+                        <label class="custom-label" for="payment-ability">Khả năng chi trả</label>
                         <input id="payment-ability" type="text" class="form-control" name="payment_ability">
                     </div>
                 </div>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-primary mt-4">Thêm</button>  <!--Thêm khách hàng còn bị lỗi-->
+                <button type="submit" class="btn btn-success bg-gradient-primary mt-4"> Lưu </button>  <!--Thêm khách hàng còn bị lỗi-->
             </div>
         </form>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.my-select2').select2();
-        });
-    </script>
+    <script src="../../static/js/customer/create_customer.js"></script>
 {% endblock %}

@@ -1,9 +1,9 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
-from sqlalchemy.orm import relationship
-from flask_login import UserMixin
+from flask_login            import UserMixin
+from sqlalchemy             import Column, Integer, String, ForeignKey, DateTime, Boolean
+from sqlalchemy.orm         import relationship
 from myapp.templates.config import db
-from myapp import app
-from datetime import datetime
+from myapp                  import app
+from datetime               import datetime
 #import pandas as pd
 
 class Khach_hang(db.Model):
@@ -24,6 +24,8 @@ class Khach_hang(db.Model):
     day_without_buying = Column(Integer)
     picture            = Column(String(200))
     is_experience      = Column(Boolean)
+    gender             = Column(String(50))
+    profile_image      = Column(String(200))
     # Đây là thuộc tính được SQLAlchemy tự động xử lý,
     # nó không phải là một cột trong bảng cơ sở dữ liệu. Đây là một collection của các đối tượng san_pham
     don_hangs          = relationship('Don_hang', secondary='kh_dh',back_populates='khach_hangs' , lazy=True)
