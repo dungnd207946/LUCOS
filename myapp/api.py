@@ -423,14 +423,14 @@ def create_card():
 def booking():
     if request.method == 'POST':
         try:
-            mask_id         = request.form.get('mask')
-            staff_id        = request.form['staff']
-            date            = request.form['date']
-            customer_demand = request.form['customer_demand']
-            note            = request.form['notes']
-            is_new_customer = request.form.get('is_new_customer')
-            is_odd_customer = request.form.get('is_odd_customer')
-
+            mask_id            = request.form.get('mask')
+            staff_id           = request.form['staff']
+            date               = request.form['date']
+            customer_demand    = request.form['customer_demand']
+            note               = request.form['notes']
+            is_new_customer    = request.form.get('is_new_customer')
+            is_odd_customer    = request.form.get('is_odd_customer') # Khách trải nghiệm
+            is_single_customer = request.form.get('is_single_customer') # Khách buổi lẻ
             if is_odd_customer:  #Nếu là khách trải nghiệm thì tạo khách mới, thẻ mới
                 customer_id       = request.form['new_customer_id']
                 customer_name     = request.form['new_customer_name']
@@ -449,26 +449,37 @@ def booking():
                 db.session.commit()
 
                 #Tạo thẻ mới
-                new_card          = SpaCard(customer_id = customer_id,
-                                            total_price = price,
-                                            paid        = price,
-                                            debt        = 0)
+                new_card          = SpaCard(customer_id = customer_id, total_price = price, paid = price, debt = 0)
                 db.session.add(new_card)
                 db.session.commit()
 
                 #Tạo Card_Treatment mới
                 card_id            = new_card.id
-                new_card_treatment = Card_Treatment(card_id      = card_id,
-                                                    treatment_id = treatment_id,
-                                                    price        = price,
-                                                    total_time   = 1,
-                                                    time_used    = 0)
+                new_card_treatment = Card_Treatment(card_id = card_id, treatment_id = treatment_id, price = price,total_time = 1, time_used = 0)
                 db.session.add(new_card_treatment)
                 db.session.commit()
+            elif is_single_customer:
+                customer_id = request.form['single_customer_id']
+                treatment_id = request.form['single_customer_treatment']
+                price = request.form['single_customer_treatment_price']
+
+                # Tạo thẻ mới
+                new_card = SpaCard(customer_id=customer_id, total_price=price, paid=price, debt=0)
+                db.session.add(new_card)
+                db.session.commit()
+
+                # Tạo Card_Treatment mới
+                card_id = new_card.id
+                new_card_treatment = Card_Treatment(card_id=card_id, treatment_id=treatment_id, price=price, total_time=1, time_used=0)
+                db.session.add(new_card_treatment)
+                db.session.commit()
+
             else:
                 customer_id  = request.form.get('customer_id')
                 treatment_id = request.form.get('treatment_id')
                 card_id = request.form.get('card_id')
+
+            # Đổi tiền tour và biến is_new nếu là khách mới, khách trải nghiệm
             if is_new_customer or is_odd_customer:
                 staff_money     = 40000
                 is_new_customer = 1
@@ -476,7 +487,11 @@ def booking():
                 t               = Treatment.query.filter(Treatment.id == treatment_id).first()
                 staff_money     = t.tour_price
                 is_new_customer = 0
-
+            # Đổi biến is_single nếu là khách buổi lẻ
+            if is_single_customer:
+                is_single_book = 1
+            else:
+                is_single_book = 0
             new_booking     = SpaBooking(card_id      = card_id,
                                       treatment_id    = treatment_id,
                                       staff_id        = staff_id,
@@ -486,7 +501,8 @@ def booking():
                                       note            = note,
                                       status          = 1,
                                       staff_money     = staff_money,
-                                      is_new_customer = is_new_customer
+                                      is_new_customer = is_new_customer,
+                                      is_single_book  = is_single_book
                                       )
             db.session.add(new_booking)
             db.session.commit()

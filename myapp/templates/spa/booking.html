@@ -43,15 +43,23 @@
                         <h2>Đặt lịch</h2>
                         <div class="form-group justify-content-between d-flex">
                             <div class="form-group d-flex align-items-center w-50 mr-2">
+                                <label for="is_single_customer">Khách buổi lẻ:</label>
+                                <input type="checkbox" id="is_single_customer" name="is_single_customer" class="ml-2 custom-checkbox" style="width: 18px; height: 18px;">
+                            </div>
+
+                            <div class="form-group d-flex align-items-center w-50">
+                                <label for="is_odd_customer">Khách trải nghiệm:</label>
+                                <input type="checkbox" id="is_odd_customer" name="is_odd_customer" class="ml-2 custom-checkbox" style="width: 18px; height: 18px;">
+                            </div>
+                        </div>
+                        <div class="form-group justify-content-between d-flex">
+                            <div class="form-group d-flex align-items-center w-50 mr-2">
                                 <label for="is_new_customer">Khách hàng mới:</label>
                                 <input type="checkbox" id="is_new_customer" name="is_new_customer" class="ml-2" style="width: 18px; height: 18px;">
                             </div>
-                            <div class="form-group d-flex align-items-center w-50">
-                                <label for="is_odd_customer">Khách trải nghiệm:</label>
-                                <input type="checkbox" id="is_odd_customer" name="is_odd_customer" class="ml-2" style="width: 18px; height: 18px;">
-                            </div>
                         </div>
 
+                        <!--    ----------------------------- FORM NHẬP KHÁCH TRẢI NGHIỆM (MỚI) ------------------------- -->
                         <div class="form-group justify-content-between" id="new_customer_form" style="display: none">
                             <div class="form-group justify-content-between d-flex">
                                 <div class="w-50 mr-2">
@@ -92,7 +100,34 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group customer-select" id="existed_customer">
+
+                    <!--    ----------------------------- FORM NHẬP KHÁCH LẺ ------------------------- -->
+                        <div class="form-group justify-content-between" id="single_customer_form" style="display: none">
+                            <div class="form-group customer-select" id="single_customer">
+                                <label for="single_customer_id">Khách hàng:</label>
+                                <input type="text" class="form-control" id="single_customer_id" name="single_customer_id" required="required" autocomplete="off" oninput="getSpaSuggestions(this.value)" onfocus="showAllSpaSuggestions(this.value)">
+                                <div id="single_suggestions" class="list-group" style="display: none;"></div>
+                            </div>
+                            <div class="form-group justify-content-between d-flex">
+                                <div class="w-50 mr-2">
+                                    <label for="single_customer_treatment">Liệu trình:</label>
+                                    <select id="single_customer_treatment" name="single_customer_treatment">
+                                        <!-- Options will be dynamically generated -->
+                                        <option value="" disabled selected hidden>Chọn liệu trình...</option>
+                                        {% for t in treatments %}
+                                            <option value="{{t.id}}">{{ t.name }}</option>
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                                <div class="w-50">
+                                    <label for="single_customer_treatment_price">Giá tiền:</label>
+                                    <input type="number" id="single_customer_treatment_price" name="single_customer_treatment_price">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--    ----------------------------- FORM NHẬP KHÁCH ĐÃ MUA THẺ ------------------------- -->
+                        <div class="form-group customer-select"         id="existed_customer">
                             <label for="customer_id">Khách hàng:</label>
                             <input type="text" class="form-control" id="customer_id" name="customer_id" required="required" autocomplete="off" oninput="getSpaSuggestions(this.value)" onfocus="showAllSpaSuggestions(this.value)">
                             <div id="suggestions" class="list-group" style="display: none;"></div>
@@ -100,8 +135,7 @@
 
                         <div class="form-group" id="customer-card-container" style="display: none"></div>
 
-
-
+                        <!--    ----------------------------- PHẦN ĐẶT LỊCH CHUNG CHO CẢ 3 FORM ------------------------- -->
                         <div class="form-group d-flex justify-content-between">
                             <div class="w-50 mr-2">
                                 <label for="staff">Nhân viên:</label>

@@ -217,7 +217,7 @@
 .customer-select{
     position: relative;
 }
-#suggestions {
+#suggestions, #single_suggestions {
     /*left: 23.8%;*/
     /*top: 6rem;*/
     max-height: 200px; /* Chiều cao tối đa của danh sách gợi ý */

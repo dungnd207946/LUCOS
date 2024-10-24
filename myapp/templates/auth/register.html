@@ -16,42 +16,42 @@
     {% endif %}
     <div class="register">
         <form id="register-form" action="{{ url_for('auth.register_page') }}" method="post">
-            <h1>Register</h1>
+            <h2>Đăng kí người dùng</h2>
             <div class="input-box">
-                <input id="register-fullname" name="fullname" type="text" placeholder="Full name" required>
+                <input id="register-fullname" name="fullname" type="text" placeholder="Họ và tên" required>
                 <i class='bx bxs-user'></i>
             </div>
             <div class="input-box">
-                <input id="register-username" name="username" type="text" placeholder="Username" required>
+                <input id="register-username" name="username" type="text" placeholder="Tên đăng nhập" required>
                 <i class='bx bxs-user'></i>
             </div>
             <div class="input-box">
-                <input id="register-phonenumber" name="phone_number" type="text" placeholder="Phone number" required>
+                <input id="register-phonenumber" name="phone_number" type="text" placeholder="Số điện thoại" required>
                 <i class='bx bx-phone'></i>
             </div>
             <div class="input-box">
-                <input id="register-password" name="user_password" type="password" placeholder="Password" required>
+                <input id="register-password" name="user_password" type="password" placeholder="Mật khẩu" required>
                 <i class='bx bxs-lock-alt' ></i>
             </div>
             <div class="input-box">
-                <input id="confirm-password" name="confirm_password" type="password" placeholder="Confirm Password" required>
+                <input id="confirm-password" name="confirm_password" type="password" placeholder="Xác nhận mật khẩu" required>
                 <i class='bx bxs-lock-alt' ></i>
             </div>
             <div class="input-box"><label><select name="user_role">
-                <option value="" disabled selected hidden style="font-size: 14px;">Select role</option>
+                <option value="" disabled selected hidden style="font-size: 14px;">Phân quyền</option>
                 <option value="ADMIN">ADMIN</option>
                 <option value="USER">USER</option>
             </select></label></div>
 
             <div class="remember-forgot">
-                <label><input type="checkbox" required>I agree to the terms & conditions</label>
+                <label><input type="checkbox" required>Đồng ý với các điều khoản và quy định</label>
             </div>
 
-            <button type="submit" class="btn" >Register</button>
+            <button type="submit" class="btn" >Đăng kí</button>
 
             <div class="login-link">
-                <p>Already have account ?
-                    <a href="{{url_for('auth.login_page')}}">Login</a>
+                <p>Đã có tài khoản ?
+                    <a href="{{url_for('auth.login_page')}}">Đăng nhập</a>
                 </p>
             </div>
         </form>

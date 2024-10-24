@@ -265,7 +265,7 @@ def spa():
 @login_required
 def create_card():
     allTreatment = getAllTreatments()
-    allStaff     = getStaff()
+    allStaff     = User_account.query.all()
     return render_template('spa/card-create.html', treatments=allTreatment, staffs=allStaff)
 
 @routes.route('/spa/booking', methods=['GET'])

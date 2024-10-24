@@ -15,29 +15,23 @@
     {% endif %}
     <div class="login">
         <form action="{{ url_for('auth.login_page') }}" method="post">
-            <h1>Login</h1>
+            <h1>Đăng nhập</h1>
             <div class="input-box">
-                <input id="username" name="username" type="text" placeholder="Username" required>
+                <input id="username" name="username" type="text" placeholder="Tên đăng nhập" required>
                 <i class='bx bxs-user'></i>
             </div>
 
             <div class="input-box">
-                <input id="password" name="user_password" type="password" placeholder="Password" required>
+                <input id="password" name="user_password" type="password" placeholder="Mật khẩu" required>
                 <i class='bx bxs-lock-alt' ></i>
             </div>
 
             <div class="remember-forgot">
-                <label><input type="checkbox">Remember me</label>
-                <a href="#">Forgot password ?</a>
+                <label><input type="checkbox">Nhớ mật khẩu</label>
+                <a href="#">Quên mật khẩu ?</a>
             </div>
 
-            <button type="submit" class="btn" >Login</button>
-
-            <div class="register-link">
-                <p>Don't have account ?
-                    <a href="{{url_for('auth.register_page')}}">Register</a>
-                </p>
-            </div>
+            <button type="submit" class="btn" >Đăng nhập</button>
         </form>
     </div>
     <p>Tài khoản và mật khẩu mặc định: guest / guest</p>

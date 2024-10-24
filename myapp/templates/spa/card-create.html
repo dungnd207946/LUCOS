@@ -63,14 +63,18 @@
                     <label for="debt">Dư nợ</label>
                     <input type="number" id="debt" name="debt" readonly>
                 </div>
-                <div class="form-group">
-                    <label for="staff">Nhân viên tạo thẻ</label>
-                    <select id="staff" name="staff" required>
-                        <option value="" disabled hidden selected>Chọn nhân viên...</option>
-                        {% for staff in staffs %}
-                            <option value="{{staff.id}}">{{ staff.full_name }}</option>
-                        {% endfor %}
-                    </select>
+<!--                <div class="form-group" style="width: 100%">-->
+                    <div class="form-group">
+                        <label for="staff">Nhân viên tạo thẻ</label>
+                        <select id="staff" name="staff" required>
+                            <option value="" disabled hidden selected>Chọn nhân viên...</option>
+                            {% for staff in staffs %}
+                                <option value="{{staff.id}}">{{ staff.full_name }}</option>
+                            {% endfor %}
+                        </select>
+<!--                    </div>-->
+<!--                    <label for="divide_money">Chia tiền</label>-->
+<!--                    <input id="divide_money" name="divide_money" type="number">-->
                 </div>
                 <div class="form-group">
                     <label for="note">Ghi chú</label>

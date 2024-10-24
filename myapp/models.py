@@ -1,5 +1,5 @@
 from flask_login            import UserMixin
-from sqlalchemy             import Column, Integer, String, ForeignKey, DateTime, Boolean
+from sqlalchemy             import Column, Integer, String, ForeignKey, DateTime, Boolean, Float
 from sqlalchemy.orm         import relationship
 from myapp.templates.config import db
 from myapp                  import app
@@ -187,6 +187,7 @@ class SpaBooking(db.Model):
     status             = Column(Integer) # quy ước 1 là Chưa đến, 2 là Hoàn thành, 3 là Hủy
     staff_money        = Column(Integer)
     is_new_customer    = Column(Boolean)
+    is_single_book     = Column(Boolean)
 
     # relationship
     spa_card           = relationship("SpaCard", foreign_keys=[card_id])
@@ -195,10 +196,10 @@ class SpaBooking(db.Model):
     masks              = relationship("Mask", foreign_keys=[mask_id])
 
 class Card_Staff(db.Model):
-    __tablename__ = 'card_staff'
-    card_id = Column(Integer, ForeignKey('spa_card.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True, nullable=False)
-    staff_id = Column(Integer, ForeignKey('user_account.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True, nullable=False)
-
+    __tablename__      = 'card_staff'
+    card_id            = Column(Integer, ForeignKey('spa_card.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True, nullable=False)
+    staff_id           = Column(Integer, ForeignKey('user_account.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True, nullable=False)
+    divide_money       = Column(Float)
 
 if __name__ == "__main__":
     app.app_context().push()

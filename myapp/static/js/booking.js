@@ -184,6 +184,31 @@ function showSuggestion(data){
         } else {
             suggestionsDiv.style.display = 'none';
         }
+
+    const singleSuggestionsDiv = document.getElementById('single_suggestions');
+    singleSuggestionsDiv.innerHTML = '';
+        if (data.suggestions.length > 0) {
+            data.suggestions.forEach(suggestion => {
+                const suggestionElement = document.createElement('a');
+                suggestionElement.setAttribute('href', '#');
+                suggestionElement.classList.add('list-group-item', 'list-group-item-action');
+                suggestionElement.innerHTML = '<strong>' + suggestion.customer_id + '</strong><br>' + suggestion.name;
+                suggestionElement.addEventListener('click', () => {
+                    document.getElementById('single_customer_id').value = suggestion.name;
+                    // Tùy thuộc vào cách bạn xây dựng API, bạn có thể lấy được customer_id từ đối tượng suggestion
+                    const customerId = suggestion.customer_id;
+                    ID = customerId
+                    // console.log('Customer ID:', customerId);
+                    singleSuggestionsDiv.style.display = 'none'; // Tắt ô suggest sau khi chọn khách hàng
+                    // console.log(customerId)
+                    // showCard(customerId);
+                });
+                singleSuggestionsDiv.appendChild(suggestionElement);
+            });
+            singleSuggestionsDiv.style.display = 'block';
+        } else {
+            singleSuggestionsDiv.style.display = 'none';
+        }
 }
 
 // Hàm Lấy suggestion thông qua việc nhập input
@@ -202,8 +227,10 @@ function getSpaSuggestions(input) {
         });
 }
 
-// Hàm dùng khi chọn ô input sẽ tự động xuất hiện suggestion
+// Hàm dùng khi chọn ô input sẽ tự động xuất hiện spa suggestion
 function showAllSpaSuggestions(input) {
+    // Nếu không có ký tự nào
+    console.log("Focus customer box");
     if (input.toString() === ''){
         fetch('/get-all-spa-customer-suggestions')
         .then(response => response.json())
@@ -213,7 +240,7 @@ function showAllSpaSuggestions(input) {
         .catch(error => {
             console.error('Error:', error);
         });
-    } // Không có ký tự nào
+    }
     else {
         getSpaSuggestions(input);
     }
@@ -246,51 +273,134 @@ function showAllSuggestions(input) {
         getSuggestions(input);
     }
 }
-// Thêm sự kiện nghe để bắt sự kiện click trên toàn bộ trang
+// Thêm sự kiện nghe để bắt sự kiện click trên toàn bộ trang để tắt ô suggest khi bấm ra ngoài trang
 document.addEventListener('click', function(event) {
     const suggestionsDiv = document.getElementById('suggestions');
+    const singleSuggestionsDiv = document.getElementById('single_suggestions');
     const input = document.getElementById('customer_id');
+    const single_input = document.getElementById('single_customer_id');
 
     // Kiểm tra xem sự kiện click có diễn ra trên ô input hoặc danh sách gợi ý không
     if (event.target !== input && event.target !== suggestionsDiv && !suggestionsDiv.contains(event.target)) {
         // Nếu không, ẩn danh sách gợi ý
         suggestionsDiv.style.display = 'none';
     }
+
+    // Tương tự như ô suggest ở trên, đây là ô suggest riêng cho khách lẻ
+    if (event.target !== single_input && event.target !== singleSuggestionsDiv && !singleSuggestionsDiv.contains(event.target)) {
+        // Nếu không, ẩn danh sách gợi ý
+        singleSuggestionsDiv.style.display = 'none';
+    }
 });
 
 // Sự kiện này để thay thế value của ô input thành customer_id, thay vì ô input trả về dữ liệu đuược nhập vào bởi người dùng
 function getCustomerId(){
     document.getElementById('customer_id').value = ID;
+    document.getElementById('single_customer_id').value = ID;
 }
 
-// Thêm sự kiện để nghe checkbox
+// Xử lí bỏ thuộc tính reuired khi chuyển form thêm khách hàng (Form khách trải nghiệm)
 document.getElementById('is_odd_customer').addEventListener('change', function() {
-    const formGroup = document.getElementById('new_customer_form');
-    const existed_customer = document.getElementById('existed_customer')
-    const newCustomerId = document.getElementById('new_customer_id');
-    const newCustomerName = document.getElementById('new_customer_name');
-    const newCustomerPhone = document.getElementById('new_customer_phone');
-    const newCustomerTreatment = document.getElementById('new_customer_treatment')
-    const price = document.getElementById('new_customer_treatment_price')
-    const cardContainer = document.getElementById('customer-card-container');
-    cardContainer.style.display = 'none'
-    const customerID = document.getElementById('customer_id')
+    const newCustomerForm             = document.getElementById('new_customer_form');
+    const singleCustomerForm          = document.getElementById('single_customer_form');
+    const existed_customer            = document.getElementById('existed_customer')
+
+    const newCustomerId               = document.getElementById('new_customer_id');
+    const newCustomerName             = document.getElementById('new_customer_name');
+    const newCustomerPhone            = document.getElementById('new_customer_phone');
+    const newCustomerTreatment        = document.getElementById('new_customer_treatment')
+    const newCustomerPrice            = document.getElementById('new_customer_treatment_price')
+    const cardContainer               = document.getElementById('customer-card-container');
+
+    const customerID                  = document.getElementById('customer_id')
+    const singleCustomerID            = document.getElementById('single_customer_id');
+    const singleCustomerTreatment     = document.getElementById('single_customer_treatment');
+    const singleCustomerTreatmentPrice= document.getElementById('single_customer_treatment_price');
+
+    const checkboxes = document.querySelectorAll('.custom-checkbox');
     if (this.checked) {
-        formGroup.style.display = 'block';
-        existed_customer.style.display = 'none';
+        newCustomerForm.style.display    = 'block';
+        singleCustomerForm.style.display = 'none';
+        existed_customer.style.display   = 'none';
+        cardContainer.style.display      = 'none';
         newCustomerId.setAttribute('required', 'required');
         newCustomerName.setAttribute('required', 'required');
         newCustomerPhone.setAttribute('required', 'required');
-        price.setAttribute('required', 'required')
+        newCustomerTreatment.setAttribute('required', 'required');
+        newCustomerPrice.setAttribute('required', 'required')
+
         customerID.removeAttribute('required');
+        singleCustomerID.removeAttribute('required');
+        singleCustomerTreatment.removeAttribute('required');
+        singleCustomerTreatmentPrice.removeAttribute('required');
+
+        // Xử lí 2 checkbox khách lẻ và khách TN không check cùng lúc
+        checkboxes.forEach(cb => {
+            if (cb !== this){
+                cb.checked = false;
+                console.log("Test checkbox")
+            }
+        });
     } else {
-        formGroup.style.display = 'none';
+        newCustomerForm.style.display = 'none';
         existed_customer.style.display = 'block';
         newCustomerId.removeAttribute('required');
         newCustomerName.removeAttribute('required');
         newCustomerPhone.removeAttribute('required');
         newCustomerTreatment.removeAttribute('required');
-        price.removeAttribute('required')
+        newCustomerPrice.removeAttribute('required')
         customerID.setAttribute('required', 'required');
     }
 });
+
+// Xử lí bỏ thuộc tính reuired khi chuyển form thêm khách hàng (Form khách lẻ)
+document.getElementById('is_single_customer').addEventListener('change', function() {
+    const newCustomerForm             = document.getElementById('new_customer_form');
+    const singleCustomerForm          = document.getElementById('single_customer_form');
+    const existed_customer            = document.getElementById('existed_customer')
+
+    const newCustomerId               = document.getElementById('new_customer_id');
+    const newCustomerName             = document.getElementById('new_customer_name');
+    const newCustomerPhone            = document.getElementById('new_customer_phone');
+    const newCustomerTreatment        = document.getElementById('new_customer_treatment')
+    const newCustomerPrice            = document.getElementById('new_customer_treatment_price')
+    const cardContainer               = document.getElementById('customer-card-container');
+
+    const customerID                  = document.getElementById('customer_id')
+    const singleCustomerID            = document.getElementById('single_customer_id');
+    const singleCustomerTreatment     = document.getElementById('single_customer_treatment');
+    const singleCustomerTreatmentPrice= document.getElementById('single_customer_treatment_price');
+
+    const checkboxes = document.querySelectorAll('.custom-checkbox');
+    if (this.checked) {
+        newCustomerForm.style.display    = 'none';
+        singleCustomerForm.style.display = 'block';
+        existed_customer.style.display   = 'none';
+        cardContainer.style.display      = 'none';
+        newCustomerId.removeAttribute('required');
+        newCustomerName.removeAttribute( 'required');
+        newCustomerPhone.removeAttribute( 'required');
+        newCustomerPrice.removeAttribute( 'required')
+        newCustomerTreatment.removeAttribute('required');
+        customerID.removeAttribute('required');
+
+        singleCustomerID.setAttribute('required', 'required');
+        singleCustomerTreatment.setAttribute('required', 'required');
+        singleCustomerTreatmentPrice.setAttribute('required', 'required');
+
+        // Xử lí 2 checkbox khách lẻ và khách TN không check cùng lúc
+        checkboxes.forEach(cb => {
+            if (cb !== this){
+                cb.checked = false;
+            }
+        });
+    } else {
+        singleCustomerForm.style.display = 'none';
+        existed_customer.style.display = 'block';
+        singleCustomerID.removeAttribute('required');
+        singleCustomerTreatment.removeAttribute('required');
+        singleCustomerTreatmentPrice.removeAttribute('required');
+        customerID.setAttribute('required', 'required');
+    }
+});
+
