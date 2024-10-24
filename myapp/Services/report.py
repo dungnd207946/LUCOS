@@ -46,7 +46,7 @@ def getRevenueByStaff(start_date_str, end_date_str):
         User_account.full_name.label('staff_name'),
         func.sum(
             case(
-                (Khach_hang.is_experience != True, SpaCard.paid), # Lấy doanh thu từ khách mua thẻ
+                (Khach_hang.is_experience != True, SpaCard.paid*Card_Staff.divide_money), # Lấy doanh thu từ khách mua thẻ
                 else_=0
             )
         ).label('card_revenue'),
@@ -74,7 +74,7 @@ def getRevenueByStaff(start_date_str, end_date_str):
     .join(Card_Staff, User_account.id == Card_Staff.staff_id)
     .join(SpaCard, Card_Staff.card_id == SpaCard.id)
     .join(Khach_hang, SpaCard.customer_id == Khach_hang.id)
-    .filter(User_account.user_role == 'USER',
+    .filter(User_account.user_role != 'Dump value',
             and_(
                 func.str_to_date(SpaCard.date, '%d/%m/%Y %H:%i') >= start_date,  # So sánh thời gian bắt đầu
                 func.str_to_date(SpaCard.date, '%d/%m/%Y %H:%i') <= end_date)

@@ -110,6 +110,20 @@
     /*color: #333;*/
     background: lightgray;
 }
+
+.staff_container{
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    margin-bottom: 10px;
+    padding: 10px;
+    padding-bottom: 0;
+}
+.btn-add-staff {
+    color: transparent;
+    background: transparent;
+    border: none;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);

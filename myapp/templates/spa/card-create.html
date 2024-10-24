@@ -13,12 +13,12 @@
             <form method="post" action="{{url_for('api.create_card')}}">
                 <div class="form-group">
                     <label for="customer_id">Khách hàng</label>
-                    <input type="text" class="form-control" id="customer_id" name="customer_id" required autocomplete="off" oninput="getSuggestions(this.value)" onfocus="showAllSuggestions(this.value)">
+                    <input placeholder="Click để chọn khách hàng" type="text" class="form-control" id="customer_id" name="customer_id" required autocomplete="off" oninput="getSuggestions(this.value)" onfocus="showAllSuggestions(this.value)">
                     <div id="suggestions" class="list-group" style="display: none;"></div>
                 </div>
                 <div class="form-group">
                     <label for="card-id">Mã thẻ</label>
-                    <input type="text" id="card-id" name="card_id">
+                    <input placeholder="Tự động tạo nếu để trống" type="text" id="card-id" name="card_id">
                 </div>
                 <div id="treatments-container">
                     <div class="treatment-container" id="treatment-container-1">
@@ -63,18 +63,27 @@
                     <label for="debt">Dư nợ</label>
                     <input type="number" id="debt" name="debt" readonly>
                 </div>
-<!--                <div class="form-group" style="width: 100%">-->
-                    <div class="form-group">
-                        <label for="staff">Nhân viên tạo thẻ</label>
-                        <select id="staff" name="staff" required>
-                            <option value="" disabled hidden selected>Chọn nhân viên...</option>
-                            {% for staff in staffs %}
-                                <option value="{{staff.id}}">{{ staff.full_name }}</option>
-                            {% endfor %}
-                        </select>
-<!--                    </div>-->
-<!--                    <label for="divide_money">Chia tiền</label>-->
-<!--                    <input id="divide_money" name="divide_money" type="number">-->
+                <div id="staffs_container">
+                    <div class="staff_container" id="staff_container_1">
+                        <div class="form-group" style="width: 100%; justify-content: normal">
+                            <div class="form-group">
+                                <label for="staff_1" style="margin-bottom: 0">Nhân viên tạo thẻ</label>
+                                <select id="staff_1" name="staff_1" required>
+                                    <option value="" disabled hidden selected>Chọn nhân viên...</option>
+                                    {% for staff in staffs %}
+                                        <option value="{{staff.id}}">{{ staff.full_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group" style="width: 40%; padding-left: 50px">
+                                <label for="divide_money_1" style="width: 30%; margin-bottom: 0">Chia tiền</label>
+                                <input id="divide_money_1" name="divide_money_1" type="text" placeholder="VD: 0.4 " oninput="validateDecimal(this)" >
+                                <button class="btn btn-success" type="button" style="margin-top: 0px; margin-left: 20px; " onclick="addStaff()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="note">Ghi chú</label>
@@ -119,6 +128,39 @@
     <script src="/static/js/booking.js"></script>
     <script src="/static/js/create-task.js"></script>
     <script>
+        let staffCount = 1;
+        function addStaff(){
+            staffCount++;
+            const staffsContainer = document.getElementById('staffs_container');
+            const newStaff = document.createElement('div');
+            newStaff.classList.add('staff_container')
+            newStaff.id = `staff_container_${staffCount}`;
+            newStaff.innerHTML = `
+                <div class="form-group" style="justify-content: flex-start; ">
+                    <button class="close-btn" onclick="removeForm(this)">&times;</button>
+                </div>
+                <div class="form-group" style="width: 100%; justify-content: normal">
+                    <div class="form-group">
+                        <label for="staff_${staffCount}" style="margin-bottom: 0">Nhân viên tạo thẻ</label>
+                        <select id="staff_${staffCount}" name="staff_${staffCount}" required>
+                            <option value="" disabled hidden selected>Chọn nhân viên...</option>
+                            {% for staff in staffs %}
+                                <option value="{{staff.id}}">{{ staff.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="width: 40%; padding-left: 50px">
+                        <label for="divide_money_${staffCount}" style="width: 30%; margin-bottom: 0">Chia tiền</label>
+                        <input id="divide_money_${staffCount}" name="divide_money_${staffCount}" type="text" placeholder="VD: 0.4 " oninput="validateDecimal(this)">
+                        <button class="btn btn-success btn-add-staff" type="button" style="margin-top: 0px; margin-left: 20px;" onclick="">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            staffsContainer.insertBefore(newStaff, staffsContainer.lastElementChild.nextSibling);
+        }
+
         let treatmentCount = 1;
         function addTreatment() {
             treatmentCount++;
@@ -180,6 +222,14 @@
         function removeForm(button) {
             const formContainer = button.parentElement.parentElement;
             formContainer.remove();
+        }
+
+        // Chỉ cho phép nhập chia tiền là số thập phân
+        function validateDecimal(input) {
+            input.value = input.value.replace(/[^0-9.]/g, ''); // Chỉ cho phép số và dấu chấm
+            if ((input.value.match(/\./g) || []).length > 1) {
+                input.value = input.value.slice(0, -1); // Không cho phép nhập hơn một dấu chấm
+            }
         }
     </script>
 {% endblock %}

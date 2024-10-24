@@ -373,7 +373,6 @@ def create_card():
             total_price  = request.form['total_price']
             paid         = request.form['paid']
             debt         = request.form['debt']
-            staff        = request.form['staff']
             note         = request.form['note']
             if card_id == '':
                 new_card = SpaCard(
@@ -391,10 +390,7 @@ def create_card():
                                    note        = note)
             db.session.add(new_card)
             db.session.commit()
-            new_card_staff = Card_Staff(card_id  = new_card.id,
-                                        staff_id = staff)
-            db.session.add((new_card_staff))
-            db.session.commit()
+
             #Lấy số lượng treatment
             treatment_count = len([key for key in request.form.keys() if key.startswith('treatment_id_')])
             for i in range(1, treatment_count + 1):
@@ -409,6 +405,14 @@ def create_card():
                                                     total_time   = total_time,
                                                     time_used    = time_used)
                 db.session.add(new_card_treatment)
+                db.session.commit()
+            # Lấy số lượng nhân viên
+            staff_count = len([key for key in request.form.keys() if key.startswith('staff_')])
+            for i in range(1, staff_count + 1):
+                staff_id       = request.form[f'staff_{i}']
+                divide_money   = request.form[f'divide_money_{i}']
+                new_card_staff = Card_Staff(card_id=new_card.id, staff_id=staff_id, divide_money=divide_money)
+                db.session.add(new_card_staff)
                 db.session.commit()
             flash('Tạo thẻ mới thành công!', 'success')
             return redirect(url_for('routes.spa'))

@@ -1,6 +1,6 @@
 from flask                   import Blueprint, url_for, request, render_template, flash, redirect, jsonify, session
 from flask_login             import login_required, current_user
-from sqlalchemy              import desc, and_
+from sqlalchemy import desc, and_, func, case
 from flask_sqlalchemy        import pagination
 from sqlalchemy.exc          import SQLAlchemyError
 from sqlalchemy.orm          import aliased
@@ -413,6 +413,11 @@ def staff_revenue_report():
     end_date_default_str = end_date_default.strftime('%Y-%m-%d')
 
     staff_revenue_reports = getRevenueByStaff(start_date_default_str, end_date_default_str)
+    for r in staff_revenue_reports:
+        print(r)
+
+    # kh = db.session.query(Khach_hang.is_experience, SpaCard.paid).join(SpaCard, Khach_hang.id == SpaCard.customer_id).filter(Khach_hang.is_experience == None).all()
+    # print(kh)
     return render_template('report/staff_revenue_report.html',
                            staff_revenue_reports = staff_revenue_reports,
                            start_date            = start_date_default_str,
