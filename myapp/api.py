@@ -3,7 +3,7 @@ from datetime                      import datetime
 from flask                         import Blueprint, url_for, request, render_template, flash, redirect, jsonify, session
 from flask_login                   import login_required, current_user
 from sqlalchemy                    import and_
-from sqlalchemy.exc                import SQLAlchemyError
+from sqlalchemy.exc                import SQLAlchemyError, IntegrityError
 from myapp                         import app
 from myapp.Services.report         import countMaskFromBooking, getRevenueByStaff
 from myapp.models                  import Khach_hang, Task_Customer, User_account, SpaCard, Treatment, SpaBooking, Card_Treatment, Mask, Card_Staff, Skin_type, Customer_skin
@@ -91,26 +91,29 @@ def create_customer():
                     print("Lỗi: Không thể lưu tệp.")
             else:
                 save_path = None
-            new_customer = Khach_hang(id=id,
-                                      ten_khach_hang=name,
-                                      so_dien_thoai=phone_number,
-                                      khu_vuc=khu_vuc,
-                                      dia_chi = address,
-                                      payment_ability=payment_ability,
-                                      skin_property=skin,
-                                      email=email,
-                                      nhom_khach_hang=group,
-                                      ngay_sinh=birth_date,
-                                      point=0,
-                                      active=1,
-                                      gender=gender,
-                                      profile_image=save_path
-                                      )
-            db.session.add(new_customer)
-            db.session.commit()
-            new_customer_skin = Customer_skin(skin_type_id=skin,
-                                              customer_id=new_customer.id)
-            db.session.add(new_customer_skin)
+            with db.session.begin_nested():
+                new_customer = Khach_hang(id=id,
+                                          ten_khach_hang=name,
+                                          so_dien_thoai=phone_number,
+                                          khu_vuc=khu_vuc,
+                                          dia_chi = address,
+                                          payment_ability=payment_ability,
+                                          skin_property=skin,
+                                          email=email,
+                                          nhom_khach_hang=group,
+                                          ngay_sinh=birth_date,
+                                          point=0,
+                                          active=1,
+                                          gender=gender,
+                                          profile_image=save_path
+                                          )
+                db.session.add(new_customer)
+                db.session.flush()
+                
+                new_customer_skin = Customer_skin(skin_type_id=skin,
+                                                  customer_id=new_customer.id)
+                db.session.add(new_customer_skin)
+            # Commit sau khi tất cả thao tác thành công
             db.session.commit()
             flash('Thêm khách hàng thành công!', 'success')
             return redirect(url_for('routes.infor_khach_hang', khach_hang_id=id))
@@ -368,58 +371,65 @@ def spa_search():
 def create_card():
     if request.method == 'POST':
         try:
-            customer_id  = request.form['customer_id']
-            card_id      = request.form['card_id']
-            total_price  = request.form['total_price']
-            paid         = request.form['paid']
-            debt         = request.form['debt']
-            note         = request.form['note']
-            if card_id == '':
-                new_card = SpaCard(
-                                   customer_id = customer_id,
-                                   total_price = total_price,
-                                   paid        = paid,
-                                   debt        = debt,
-                                   note        = note)
-            else:
-                new_card = SpaCard(id          = card_id,
-                                   customer_id = customer_id,
-                                   total_price = total_price,
-                                   paid        = paid,
-                                   debt        = debt,
-                                   note        = note)
-            db.session.add(new_card)
+            with db.session.begin_nested():
+                customer_id  = request.form['customer_id']
+                card_id      = request.form['card_id']
+                total_price  = request.form['total_price']
+                paid         = request.form['paid']
+                debt         = request.form['debt']
+                note         = request.form['note']
+                if card_id == '':
+                    new_card = SpaCard(
+                                       customer_id = customer_id,
+                                       total_price = total_price,
+                                       paid        = paid,
+                                       debt        = debt,
+                                       note        = note)
+                else:
+                    new_card = SpaCard(id          = card_id,
+                                       customer_id = customer_id,
+                                       total_price = total_price,
+                                       paid        = paid,
+                                       debt        = debt,
+                                       note        = note)
+                db.session.add(new_card)
+                db.session.flush()
+
+                #Lấy số lượng treatment
+                treatment_count = len([key for key in request.form.keys() if key.startswith('treatment_id_')])
+                for i in range(1, treatment_count + 1):
+                    treatment_id = request.form[f'treatment_id_{i}']
+                    price        = request.form[f'price_{i}']
+                    total_time   = request.form[f'total_time_{i}']
+                    time_used    = request.form[f'time_used_{i}']
+
+                    new_card_treatment = Card_Treatment(card_id      = new_card.id,
+                                                        treatment_id = treatment_id,
+                                                        price        = price,
+                                                        total_time   = total_time,
+                                                        time_used    = time_used)
+                    db.session.add(new_card_treatment)
+
+                # Lấy số lượng nhân viên
+                staff_count = len([key for key in request.form.keys() if key.startswith('staff_')])
+                for i in range(1, staff_count + 1):
+                    staff_id       = request.form[f'staff_{i}']
+                    divide_money   = request.form[f'divide_money_{i}']
+                    new_card_staff = Card_Staff(card_id=new_card.id, staff_id=staff_id, divide_money=divide_money)
+                    db.session.add(new_card_staff)
+
+            # Commit sau khi tất cả thao tác thành công
             db.session.commit()
-
-            #Lấy số lượng treatment
-            treatment_count = len([key for key in request.form.keys() if key.startswith('treatment_id_')])
-            for i in range(1, treatment_count + 1):
-                treatment_id = request.form[f'treatment_id_{i}']
-                price        = request.form[f'price_{i}']
-                total_time   = request.form[f'total_time_{i}']
-                time_used    = request.form[f'time_used_{i}']
-
-                new_card_treatment = Card_Treatment(card_id      = new_card.id,
-                                                    treatment_id = treatment_id,
-                                                    price        = price,
-                                                    total_time   = total_time,
-                                                    time_used    = time_used)
-                db.session.add(new_card_treatment)
-                db.session.commit()
-            # Lấy số lượng nhân viên
-            staff_count = len([key for key in request.form.keys() if key.startswith('staff_')])
-            for i in range(1, staff_count + 1):
-                staff_id       = request.form[f'staff_{i}']
-                divide_money   = request.form[f'divide_money_{i}']
-                new_card_staff = Card_Staff(card_id=new_card.id, staff_id=staff_id, divide_money=divide_money)
-                db.session.add(new_card_staff)
-                db.session.commit()
             flash('Tạo thẻ mới thành công!', 'success')
             return redirect(url_for('routes.spa'))
         except SQLAlchemyError as e:
             db.session.rollback()
             flash('Tạo thẻ thất bại vì mã thẻ bị trùng hoặc sai thao tác! Vui lòng thử lại.', 'error')
             print(e)  # In lỗi ra console để debug
+        except IntegrityError as e:
+            db.session.rollback()
+            flash('Lỗi: Mã thẻ bị trùng hoặc vi phạm ràng buộc dữ liệu.', 'error')
+            print(f"IntegrityError: {e}")
 
 @api.route('/spa/booking', methods=['POST'])
 @login_required
