@@ -169,7 +169,7 @@ function showSuggestion(data){
                 suggestionElement.classList.add('list-group-item', 'list-group-item-action');
                 suggestionElement.innerHTML = '<strong>' + suggestion.customer_id + '</strong><br>' + suggestion.name;
                 suggestionElement.addEventListener('click', () => {
-                    document.getElementById('customer_id').value = suggestion.name;
+                    document.getElementById('customer_id').value = suggestion.customer_id + ' - ' + suggestion.name;
                     // Tùy thuộc vào cách bạn xây dựng API, bạn có thể lấy được customer_id từ đối tượng suggestion
                     const customerId = suggestion.customer_id;
                     ID = customerId
@@ -194,7 +194,7 @@ function showSuggestion(data){
                 suggestionElement.classList.add('list-group-item', 'list-group-item-action');
                 suggestionElement.innerHTML = '<strong>' + suggestion.customer_id + '</strong><br>' + suggestion.name;
                 suggestionElement.addEventListener('click', () => {
-                    document.getElementById('single_customer_id').value = suggestion.name;
+                    document.getElementById('single_customer_id').value = suggestion.customer_id + ' - '+ suggestion.name;
                     // Tùy thuộc vào cách bạn xây dựng API, bạn có thể lấy được customer_id từ đối tượng suggestion
                     const customerId = suggestion.customer_id;
                     ID = customerId

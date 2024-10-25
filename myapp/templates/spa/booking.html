@@ -232,6 +232,7 @@
             let duration = b.duration
             let treatment_name = b.treatment_name
             let customer_name = b.customer_name;
+            let customer_id = b.customer_id;
             let note = b.note;
             console.log('Generated!')
             let startTime = b.date.split(' ')[1] // Tách ngày giờ và lấy giờ
@@ -265,7 +266,7 @@
                 </div> -->
                 <div class="panel-block">
                     <label for="customer_name">Khách hàng:</label>
-                    <div id="customer_name">${customer_name}</div>
+                    <div id="customer_name">${customer_id} - ${customer_name}</div>
                 </div>
                 <div class="panel-block">
                     <label for="note">Ghi chú:</label>

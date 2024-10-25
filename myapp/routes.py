@@ -413,13 +413,15 @@ def staff_revenue_report():
     end_date_default_str = end_date_default.strftime('%Y-%m-%d')
 
     staff_revenue_reports = getRevenueByStaff(start_date_default_str, end_date_default_str)
-    for r in staff_revenue_reports:
-        print(r)
+    # for r in staff_revenue_reports:
+    #     print(r)
 
-    # kh = db.session.query(Khach_hang.is_experience, SpaCard.paid).join(SpaCard, Khach_hang.id == SpaCard.customer_id).filter(Khach_hang.is_experience == None).all()
-    # print(kh)
+    kh = db.session.query(Khach_hang.id, Khach_hang.is_experience, SpaCard.paid, Card_Staff.staff_id).join(SpaCard, Khach_hang.id == SpaCard.customer_id).join(Card_Staff, SpaCard.id == Card_Staff.card_id).filter((Khach_hang.is_experience.is_(None)) | (Khach_hang.is_experience == False)).all()
+    for r in kh:
+        print(r)
     return render_template('report/staff_revenue_report.html',
                            staff_revenue_reports = staff_revenue_reports,
                            start_date            = start_date_default_str,
-                           end_date              = end_date_default_str
+                           end_date              = end_date_default_str,
+                           round                 = round
                            )

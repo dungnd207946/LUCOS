@@ -39,9 +39,9 @@
                 {% for s in staff_revenue_reports%}
                 <tr>
                     <td>{{s.staff_name}}</td>
-                    <td>{{"{:,}".format(s.card_revenue)}}</td>
-                    <td>{{"{:,}".format(s.experience_revenue)}}</td>
-                    <td>{{"{:,}".format(s.total_revenue)}}</td>
+                    <td>{{"{:,}".format(round(s.card_revenue or 0))}}</td>
+                    <td>{{"{:,}".format(round(s.experience_revenue or 0))}}</td>
+                    <td>{{"{:,}".format(round(s.total_revenue or 0))}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
