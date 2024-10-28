@@ -100,10 +100,6 @@ def infor_khach_hang(): #Đang xảy ra lỗi: Chuyển trang chưa kết hợp 
 def detail_khach_hang(khach_hang_id):
     detail                                             = get_detail_customer(khach_hang_id)
     orders, product_by_order, amount_product_per_order = get_order(khach_hang_id)
-    print(detail)
-    for r in detail:
-        print(r)
-        break
 
     return render_template('customer/detail-customer.html',
                            detail                      = detail,

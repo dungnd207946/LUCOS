@@ -72,7 +72,7 @@ def create_customer():
             group           = request.form['group']
             birth_date      = request.form['birth_date']
             skin            = request.form['skin']
-            gender          = request.form['gender']
+            gender          = request.form.get('gender', 'Không')
             file            = request.files['profile_image']
             note            = request.form['customer_note']
             if file:
@@ -139,8 +139,8 @@ def update_khach_hang_by_id(khach_hang_id):
                 email           = request.form['email']
                 group           = request.form['group']
                 birth_date      = request.form['birth_date']
-                skin            = request.form['skin_type']
-                gender          = request.form['gender']
+                skin            = request.form.get('skin_type','Không')
+                gender          = request.form.get('gender', 'Không')
                 file            = request.files['profile_image']
                 note            = request.form['customer_note']
 
@@ -148,9 +148,10 @@ def update_khach_hang_by_id(khach_hang_id):
                     filename = secure_filename(file.filename)  # Đảm bảo tên file an toàn
 
                     # Kiểm tra xem user đã có ảnh cũ không
-                    old_image_path = 'myapp' + customer.profile_image  # Ví dụ: `user.avatar` lưu đường dẫn cũ trong database
-                    if old_image_path and os.path.exists(old_image_path):
-                        os.remove(old_image_path)
+                    if customer.profile_image:
+                        old_image_path = 'myapp' + customer.profile_image
+                        if old_image_path and os.path.exists(old_image_path):
+                            os.remove(old_image_path)
 
                     # Lấy đường dẫn tương đối chính xác để lưu file
                     save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
