@@ -2,71 +2,120 @@
 {% block title %}Cập nhật thông tin khách hàng{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="/static/css/detail-customer.css">
-    <link rel="stylesheet" href="/static/css/update-customer.css">
+    <link rel="stylesheet" href="/static/css/create-customer.css">
 {% endblock %}
 
 {% block content %}
     {% for user in detail %}
-    <div class="wrapper">
-        <div class="header-div">
-            <header>
-                <nav class="header-navigation">
-                    <button class="btnDelete" onclick="delete_customer('{{user.id}}')">Delete</button>
-                </nav>
-            </header>
-        </div>
-        <form action="{{ url_for('routes.update_khach_hang_by_id', khach_hang_id=user.id) }}" method="post">
-        <h2 class="ten-kh"><input class="input-ten-kh" type="text" name="ten_khach_hang" value="{{user.ten_khach_hang}}"> </h2>
-        <div class="thong-tin-khach-hang">
-            <h4>Cập nhật thông tin cá nhân</h4>
-            <div class="thong-tin-ca-nhan">
-                <div class="left-table">
-                    <table>
-                        <tr>
-                            <td class="key"><strong>Mã khách hàng:</strong></td>
-                            <td class="value">{{user.id}}</td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Số điện thoại:</strong></td>
-                            <td class="value"><input type="text" name="so_dien_thoai" value="{{user.so_dien_thoai}}"></td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Khu vực:</strong></td>
-                            <td class="value"><input type="text" name="khu_vuc" value="{{user.khu_vuc}}"></td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Tình trạng da:</strong></td>
-                            <td class="value"><input type="text" name="skin" value="{{user.skin_property}}"></td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="right-table">
-                    <table>
-                        <tr>
-                            <td class="key"><strong>Nhóm khách hàng:</strong></td>
-                            <td class="value"><input type="text" name="nhom_khach_hang" value="{{user.nhom_khach_hang}}"></td>
+    <div class="create container">
+        <form enctype="multipart/form-data" action="{{ url_for('routes.update_khach_hang_by_id', khach_hang_id=user.id) }}" method="post">
+            <h3 class="text-center mb-4">Thông tin cá nhân</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="custom-label" for="profile_image">Ảnh đại diện</label>
+                        <div class="image-input" id="image-input" onclick="document.getElementById('profile_image').click()">
+                            <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" onchange="previewImage()" style="display: none">
+                            <img id="image-preview" class="image-preview" src="{{user.profile_image}}" alt="Ảnh đại diện" style="display: block">
+                            <div class="camera-icon" >
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <span class="choose-file-text" onclick="document.getElementById('profile_image').click()">Chọn tệp</span>
 
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Giới tính:</strong></td>
-                            <td class="value">---</td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Email:</strong></td>
-                            <td class="value"><input type="text" name="email" value="{{user.email}}"></td>
-                        </tr>
-                        <tr>
-                            <td class="key"><strong>Điểm tích lũy:</strong></td>
-                            <td class="value"><input type="number" name="point" value="{{user.point}}"></td>
-                        </tr>
-                    </table>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="custom-label">Giới tính</label>
+                            <div style="display: flex; justify-content: space-between; width: 60%">
+                                <div class="form-check">
+                                    <input class="form-check-input custom-radio" type="radio" name="gender" id="male" value="Nam" {{ 'checked' if user.gender == 'Nam' else '' }}>
+                                    <label class="form-check-label" for="male">Nam</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input custom-radio" type="radio" name="gender" id="female" value="Nữ" {{ 'checked' if user.gender == 'Nữ' else '' }}>
+                                    <label class="form-check-label" for="female">Nữ</label>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 35px">
+                        <label class="custom-label" for="customer_note">Ghi chú</label>
+                        <input id="customer_note" type="text" class="form-control" name="customer_note" value="{{user.note}}">
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="custom-label" for="ten_khach_hang">Tên khách hàng*</label>
+                        <input id="ten_khach_hang" type="text" class="form-control" name="name" value="{{user.ten_khach_hang}}">
+                        <div class="invalid-feedback">Vui lòng nhập tên khách hàng.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-label" for="so_dien_thoai">Số điện thoại*</label>
+                        <input id="so_dien_thoai" type="text" class="form-control" name="phone_number" value="{{user.so_dien_thoai}}">
+                        <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-label" for="khu_vuc">Khu vực*</label>
+                        <select id="khu_vuc" class="form-control my-select2" name="khu_vuc" value="{{user.khu_vuc}}">
+<!--                            <option value=" " disabled selected hidden>Tỉnh thành phố - Quận huyện</option>-->
+                            <option value="Khác">Khác</option>
+                            <option value="Hà Nội">Hà Nội</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-label" for="address">Địa chỉ</label>
+                        <input id="address" type="text" class="form-control" name="address" value="{{user.dia_chi}}">
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-label" for="skin">Tình trạng da*</label>
+                        <select id="skin" class="form-control my-select2" name="skin_type" value="{{user.type_name}}">
+
+                            {% for s in skin %}
+                                <option value="{{s.id}}">{{s.type_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="custom-label" for="id">Mã khách hàng*</label>
+                        <input id="id" type="text" class="form-control" name="id" value="{{user.id}}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-label" for="email">Email</label>
+                        <input id="email" type="email" class="form-control" name="email" value="{{user.email}}">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="custom-label" for="nhom_khach_hang">Nhóm khách hàng</label>
+                        <select id="nhom_khach_hang" class="form-control" name="group" value="{{user.nhom_khach_hang}}">
+                            <option value="Bán lẻ">Bán lẻ</option>
+                            <option value="Bán sỉ">Bán sỉ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-label" for="ngay_sinh">Ngày sinh</label>
+                        <input id="ngay_sinh" type="date" class="form-control" name="birth_date" value="{{format_date(user.ngay_sinh)}}">
+
+                    </div>
+                    <div class="form-group">
+                        <label class="custom-label" for="payment-ability">Khả năng chi trả</label>
+                        <input id="payment-ability" type="text" class="form-control" name="payment_ability" value="{{user.payment_ability}}">
+                    </div>
                 </div>
             </div>
-            <button class="btnUpdate" type="submit">Cập nhật</button>
-        </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-success bg-gradient-primary mt-4"> Cập nhật </button>  <!--Thêm khách hàng còn bị lỗi-->
+                <button type="button" class="btn btn-danger bg-gradient-primary mt-4" onclick="window.history.back()"> Quay lại </button>
+            </div>
         </form>
     </div>
 
     {% endfor %}
+<script src="../../static/js/customer/create_customer.js"></script>
 <script src="../../static/js/detail-customer.js"></script>
+
+
 {% endblock %}

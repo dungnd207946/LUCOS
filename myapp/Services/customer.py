@@ -1,6 +1,6 @@
 from sqlalchemy import func
-
-from myapp.models import Khach_hang, Task_Customer, Task, Don_hang, KH_DH, San_pham, DH_SP, SpaCard
+from datetime import datetime
+from myapp.models import Khach_hang, Task_Customer, Task, Don_hang, KH_DH, San_pham, DH_SP, SpaCard, Skin_type
 from myapp.templates.config import db
 
 
@@ -27,7 +27,12 @@ def get_order(khach_hang_id):
     return orders, product_by_order, amount_product_per_order
 
 def get_detail_customer(khach_hang_id):
-    return Khach_hang.query.filter(Khach_hang.id == khach_hang_id)
+    result = (db.session.query(Khach_hang.id, Khach_hang.ten_khach_hang, Khach_hang.gender, Khach_hang.so_dien_thoai, Khach_hang.email, Khach_hang.khu_vuc, Khach_hang.dia_chi, Khach_hang.ngay_sinh, Khach_hang.payment_ability, Khach_hang.profile_image, Khach_hang.note, Skin_type.type_name)
+              .outerjoin(Skin_type, Khach_hang.skin_property == Skin_type.id)
+              .filter(Khach_hang.id == khach_hang_id)
+              .all())
+    return result
+
 
 def getCustomerByCard(card_id):
     return db.session.query(SpaCard.id, Khach_hang.ten_khach_hang).join(Khach_hang, SpaCard.customer_id == Khach_hang.id).filter(SpaCard.id == card_id).first()
@@ -58,3 +63,10 @@ def onlySpaCustomer():
         .group_by(Khach_hang.id, Khach_hang.ten_khach_hang)
         .having(func.count(SpaCard.id) >= 1)
         )
+
+def format_date_for_input(date_str):
+    try:
+        date_obj = datetime.strptime(date_str, "%d/%m/%Y")
+        return date_obj.strftime("%Y-%m-%d")
+    except ValueError:
+        return "Wrong Value"

@@ -19,7 +19,7 @@
                     <span>Hoàn thành</span>
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color" style="background-color: rgba(153, 0, 17, 0.8);"></span>
+                    <span class="legend-color" style="background-color: rgba(128, 128, 128, 1) ;"></span>
                     <span>Khách hủy</span>
                 </div>
             </div>
@@ -319,7 +319,7 @@
                 panel.style.color = '#fff'
             }
             else {
-                panel.style.backgroundColor = 'rgba(153, 0, 17, 0.8)'
+                panel.style.backgroundColor = 'rgba(128, 128, 128, 1)'
                 panel.style.color = '#fff'
             }
             // Hiển thị chi tiết booking
@@ -364,6 +364,10 @@
                         <div class="panel-block">
                             <label for="customer_name">Khách hàng:</label>
                             <div id="customer_name">${b.customer_name}</div>
+                        </div>
+                        <div class="panel-block">
+                            <label for="customer_note">Ghi chú về khách:</label>
+                            <div id="customer_note">${b.customer_note}</div>
                         </div>
                         <div class="panel-block">
                             <label for="is_new_customer_modal">Khách hàng mới: </label>

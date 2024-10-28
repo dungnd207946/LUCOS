@@ -1,3 +1,5 @@
+import os.path
+
 from flask                   import Blueprint, url_for, request, render_template, flash, redirect, jsonify, session
 from flask_login             import login_required, current_user
 from sqlalchemy import desc, and_, func, case
@@ -7,7 +9,7 @@ from sqlalchemy.orm          import aliased
 from myapp.models            import Khach_hang, Task_Customer, User_account, SpaCard, Treatment, SpaBooking, Card_Treatment, Mask, Card_Staff, Skin_type, Customer_skin
 from myapp.API.services      import delete, load_customer, update_day_without_buying
 from myapp.Services.task     import getTaskByCustomerID_StaffID, get_table_task_for_admin, getALlTask, get_table_task_for_only_staff, check_task_outdated
-from myapp.Services.customer import get_order, get_detail_customer, getAllCustomers, getCustomerByCard, getGroupCustomerList, getAreaCustomerList, onlySpaCustomer
+from myapp.Services.customer import get_order, get_detail_customer, getAllCustomers, getCustomerByCard, getGroupCustomerList, getAreaCustomerList, onlySpaCustomer, format_date_for_input
 from myapp.Services.user     import getStaff
 from myapp.Services.spa      import getAllCard, getCardByCustomerID, getTreatmentByCardID, getTreatmentByID, getBookingByCardID, getSpaCardCustomer, getAllTreatments, getAllBookingData, getCustomerCardDetail
 from myapp.Services.report   import countMaskFromBooking, getRevenueByStaff
@@ -98,6 +100,10 @@ def infor_khach_hang(): #Đang xảy ra lỗi: Chuyển trang chưa kết hợp 
 def detail_khach_hang(khach_hang_id):
     detail                                             = get_detail_customer(khach_hang_id)
     orders, product_by_order, amount_product_per_order = get_order(khach_hang_id)
+    print(detail)
+    for r in detail:
+        print(r)
+        break
 
     return render_template('customer/detail-customer.html',
                            detail                      = detail,
@@ -122,8 +128,16 @@ def delete_khachhang_by_id(khach_hang_id):
 @routes.route('/khach-hang/update/<string:khach_hang_id>', methods=['GET'])
 @login_required
 def update_khach_hang_by_id(khach_hang_id):
-    customers = Khach_hang.query.filter(Khach_hang.id == khach_hang_id)
-    return render_template("customer/update-customer.html", detail=customers)
+    customers = get_detail_customer(khach_hang_id)
+    skin = Skin_type.query.all()
+    src = 'myapp/static/uploads/customer_avatar/Screenshot_2024-06-26_234859.png'
+    if os.path.exists(src):
+        print("Ảnh có tồn tại")
+    else:
+        print("Ảnh không tôồn tại")
+
+    # Truyền thêm hàm format_date vào html để chuyển từ String sang date cho ngày sinh
+    return render_template("customer/update-customer.html", detail=customers, format_date=format_date_for_input, skin=skin)
 
 @routes.route('/get-spa-customer-suggestions') # Tìm kí tự trùng lặp giữa input và data rồi đưa ra kết quả
 def get_spa_customer_suggestions():

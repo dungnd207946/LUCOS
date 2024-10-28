@@ -46,6 +46,7 @@ def getAllBookingData():
          'duration': treatment.duration,
          'customer_id': customer.id,
          'customer_name': customer.ten_khach_hang,
+         'customer_note': customer.note,
          'date': booking.date,
          'mask_id': mask.id,
          'mask': mask.mask_name,

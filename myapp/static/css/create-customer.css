@@ -39,7 +39,7 @@ h3 {
 
 /* nút submit*/
 .btn:hover {
-    background-color: lightseagreen;
+    cursor: pointer;
 }
 
 
@@ -143,9 +143,9 @@ h3 {
 .form-check {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 0px;
 }
 .form-check-label{
-    margin-left: 7px;
+    margin-left: 3px;
     margin-top: 3px;
 }

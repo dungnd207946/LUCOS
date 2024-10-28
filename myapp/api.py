@@ -74,7 +74,7 @@ def create_customer():
             skin            = request.form['skin']
             gender          = request.form['gender']
             file            = request.files['profile_image']
-
+            note            = request.form['customer_note']
             if file:
                 filename = secure_filename(file.filename)  # Đảm bảo tên file an toàn
                 # Kiểm tra và tạo thư mục nếu chưa tồn tại
@@ -105,7 +105,8 @@ def create_customer():
                                           point=0,
                                           active=1,
                                           gender=gender,
-                                          profile_image=save_path
+                                          profile_image=save_path,
+                                          note=note
                                           )
                 db.session.add(new_customer)
                 db.session.flush()
@@ -130,13 +131,54 @@ def update_khach_hang_by_id(khach_hang_id):
     if request.method == 'POST':
         for customer in customers:
             try:
-                customer.ten_khach_hang  = request.form['ten_khach_hang']
-                customer.so_dien_thoai   = request.form['so_dien_thoai']
-                customer.khu_vuc         = request.form['khu_vuc']
-                customer.skin_property   = request.form['skin']
-                customer.nhom_khach_hang = request.form['nhom_khach_hang']
-                customer.email           = request.form['email']
-                customer.point           = request.form['point']
+                name = request.form['name']
+                phone_number    = request.form['phone_number']
+                khu_vuc         = request.form['khu_vuc']
+                address         = request.form['address']
+                payment_ability = request.form['payment_ability']
+                email           = request.form['email']
+                group           = request.form['group']
+                birth_date      = request.form['birth_date']
+                skin            = request.form['skin_type']
+                gender          = request.form['gender']
+                file            = request.files['profile_image']
+                note            = request.form['customer_note']
+
+                if file:
+                    filename = secure_filename(file.filename)  # Đảm bảo tên file an toàn
+
+                    # Kiểm tra xem user đã có ảnh cũ không
+                    old_image_path = 'myapp' + customer.profile_image  # Ví dụ: `user.avatar` lưu đường dẫn cũ trong database
+                    if old_image_path and os.path.exists(old_image_path):
+                        os.remove(old_image_path)
+
+                    # Lấy đường dẫn tương đối chính xác để lưu file
+                    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    save_path = save_path.replace("\\", "/")
+                    abs_save_path = 'myapp' + save_path
+
+                    # Lưu ảnh mới vào folder
+                    file.save(abs_save_path)
+
+                    if os.path.exists(abs_save_path):
+                        print("File đã được lưu thành công!")
+                    else:
+                        print("Lỗi: Không thể lưu tệp.")
+                else:
+                    save_path = None
+
+                customer.ten_khach_hang  = name
+                customer.so_dien_thoai   = phone_number
+                customer.khu_vuc         = khu_vuc
+                customer.dia_chi         = address
+                customer.payment_ability = payment_ability
+                customer.email           = email
+                customer.nhom_khach_hang = group
+                customer.ngay_sinh       = birth_date
+                customer.skin_property   = skin
+                customer.gender          = gender
+                customer.profile_image   = save_path
+                customer.note            = note
                 db.session.commit()
                 flash('Cập nhật thông tin khách hàng thành công!', 'success')
                 return redirect(url_for('routes.detail_khach_hang', khach_hang_id=khach_hang_id))
@@ -144,6 +186,7 @@ def update_khach_hang_by_id(khach_hang_id):
                 db.session.rollback()
                 flash('Cập nhật thông tin khách hàng thất bại! Vui lòng thử lại sau.', 'error')
                 print(e)  # In lỗi ra console để debug
+
 
 @api.route('/khach-hang/handle_actions', methods=['POST'])
 @login_required

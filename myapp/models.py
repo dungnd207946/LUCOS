@@ -16,7 +16,7 @@ class Khach_hang(db.Model):
     dia_chi            = Column(String(200))
     nhom_khach_hang    = Column(String(50))
     ngay_sinh          = Column(String(20))
-    skin_property      = Column(String(100))
+    skin_property      = Column(Integer)
     payment_ability    = Column(String(20))
     last_buying_day    = Column(String(50))
     point              = Column(Integer)
@@ -26,6 +26,7 @@ class Khach_hang(db.Model):
     is_experience      = Column(Boolean)
     gender             = Column(String(50))
     profile_image      = Column(String(200))
+    note               = Column(String(200))    
     # Đây là thuộc tính được SQLAlchemy tự động xử lý,
     # nó không phải là một cột trong bảng cơ sở dữ liệu. Đây là một collection của các đối tượng san_pham
     don_hangs          = relationship('Don_hang', secondary='kh_dh',back_populates='khach_hangs' , lazy=True)
