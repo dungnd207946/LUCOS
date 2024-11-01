@@ -100,12 +100,12 @@ def infor_khach_hang(): #Đang xảy ra lỗi: Chuyển trang chưa kết hợp 
 def detail_khach_hang(khach_hang_id):
     detail                                             = get_detail_customer(khach_hang_id)
     orders, product_by_order, amount_product_per_order = get_order(khach_hang_id)
-
+    print(detail)
     return render_template('customer/detail-customer.html',
                            detail                      = detail,
                            orders                      = orders,
                            product_by_order            = product_by_order,
-                           amount_product_per_order    = amount_product_per_order,
+                           amount_product_per_order    = amount_product_per_order
                            )
 
 @routes.route('/khach-hang/them-khach-hang', methods=['GET'])
@@ -126,14 +126,10 @@ def delete_khachhang_by_id(khach_hang_id):
 def update_khach_hang_by_id(khach_hang_id):
     customers = get_detail_customer(khach_hang_id)
     skin = Skin_type.query.all()
-    src = 'myapp/static/uploads/customer_avatar/Screenshot_2024-06-26_234859.png'
-    if os.path.exists(src):
-        print("Ảnh có tồn tại")
-    else:
-        print("Ảnh không tôồn tại")
 
     # Truyền thêm hàm format_date vào html để chuyển từ String sang date cho ngày sinh
     return render_template("customer/update-customer.html", detail=customers, format_date=format_date_for_input, skin=skin)
+    # Khả năng cao là lỗi ở phần ảnh.
 
 @routes.route('/get-spa-customer-suggestions') # Tìm kí tự trùng lặp giữa input và data rồi đưa ra kết quả
 def get_spa_customer_suggestions():

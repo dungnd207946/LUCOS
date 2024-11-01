@@ -1,6 +1,6 @@
 from sqlalchemy import func
 from datetime import datetime
-from myapp.models import Khach_hang, Task_Customer, Task, Don_hang, KH_DH, San_pham, DH_SP, SpaCard, Skin_type
+from myapp.models import Khach_hang, Task_Customer, Task, Don_hang, KH_DH, San_pham, DH_SP, SpaCard, Skin_type, Customer_skin
 from myapp.templates.config import db
 
 
@@ -28,7 +28,8 @@ def get_order(khach_hang_id):
 
 def get_detail_customer(khach_hang_id):
     result = (db.session.query(Khach_hang.id, Khach_hang.ten_khach_hang, Khach_hang.gender, Khach_hang.so_dien_thoai, Khach_hang.email, Khach_hang.khu_vuc, Khach_hang.dia_chi, Khach_hang.ngay_sinh, Khach_hang.payment_ability, Khach_hang.profile_image, Khach_hang.note, Skin_type.type_name)
-              .outerjoin(Skin_type, Khach_hang.skin_property == Skin_type.id)
+              .outerjoin(Customer_skin, Khach_hang.id == Customer_skin.customer_id)
+              .outerjoin(Skin_type, Customer_skin.skin_type_id == Skin_type.id)
               .filter(Khach_hang.id == khach_hang_id)
               .all())
     return result

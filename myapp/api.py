@@ -73,7 +73,8 @@ def create_customer():
             birth_date      = request.form['birth_date']
             skin            = request.form['skin']
             gender          = request.form.get('gender', 'Không')
-            file            = request.files['profile_image']
+            # file            = request.files['profile_image']
+            file = None
             note            = request.form['customer_note']
             if file:
                 filename = secure_filename(file.filename)  # Đảm bảo tên file an toàn
@@ -128,10 +129,11 @@ def create_customer():
 @prevent_guest
 def update_khach_hang_by_id(khach_hang_id):
     customers = Khach_hang.query.filter(Khach_hang.id == khach_hang_id)
+    customer_skins = Customer_skin.query.filter(Customer_skin.customer_id == khach_hang_id)
     if request.method == 'POST':
         for customer in customers:
             try:
-                name = request.form['name']
+                name            = request.form['name']
                 phone_number    = request.form['phone_number']
                 khu_vuc         = request.form['khu_vuc']
                 address         = request.form['address']
@@ -139,9 +141,10 @@ def update_khach_hang_by_id(khach_hang_id):
                 email           = request.form['email']
                 group           = request.form['group']
                 birth_date      = request.form['birth_date']
-                skin            = request.form.get('skin_type','Không')
+                skin            = request.form.get('skin_type')
                 gender          = request.form.get('gender', 'Không')
-                file            = request.files['profile_image']
+                # file            = request.files['profile_image']
+                file = None
                 note            = request.form['customer_note']
 
                 if file:
@@ -180,6 +183,8 @@ def update_khach_hang_by_id(khach_hang_id):
                 customer.gender          = gender
                 customer.profile_image   = save_path
                 customer.note            = note
+                for customer_skin in customer_skins:
+                    customer_skin.skin_type_id = int(skin)
                 db.session.commit()
                 flash('Cập nhật thông tin khách hàng thành công!', 'success')
                 return redirect(url_for('routes.detail_khach_hang', khach_hang_id=khach_hang_id))
