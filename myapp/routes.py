@@ -100,12 +100,17 @@ def infor_khach_hang(): #Đang xảy ra lỗi: Chuyển trang chưa kết hợp 
 def detail_khach_hang(khach_hang_id):
     detail                                             = get_detail_customer(khach_hang_id)
     orders, product_by_order, amount_product_per_order = get_order(khach_hang_id)
-    print(detail)
+    skin = (db.session.query(Skin_type.type_name)
+            .join(Customer_skin, Skin_type.id == Customer_skin.skin_type_id)
+            .filter(Customer_skin.customer_id == khach_hang_id)
+            .first())
+    print(skin)
     return render_template('customer/detail-customer.html',
                            detail                      = detail,
                            orders                      = orders,
                            product_by_order            = product_by_order,
-                           amount_product_per_order    = amount_product_per_order
+                           amount_product_per_order    = amount_product_per_order,
+                           skin                        = skin
                            )
 
 @routes.route('/khach-hang/them-khach-hang', methods=['GET'])

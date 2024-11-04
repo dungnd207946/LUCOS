@@ -27,9 +27,7 @@ def get_order(khach_hang_id):
     return orders, product_by_order, amount_product_per_order
 
 def get_detail_customer(khach_hang_id):
-    result = (db.session.query(Khach_hang.id, Khach_hang.ten_khach_hang, Khach_hang.gender, Khach_hang.so_dien_thoai, Khach_hang.email, Khach_hang.khu_vuc, Khach_hang.dia_chi, Khach_hang.ngay_sinh, Khach_hang.payment_ability, Khach_hang.note, Skin_type.type_name)
-              .outerjoin(Customer_skin, Khach_hang.id == Customer_skin.customer_id)
-              .outerjoin(Skin_type, Customer_skin.skin_type_id == Skin_type.id)
+    result = (db.session.query(Khach_hang)
               .filter(Khach_hang.id == khach_hang_id)
               .all())
     return result
