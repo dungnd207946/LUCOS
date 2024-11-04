@@ -119,14 +119,14 @@ async function showCard(customer_id) {
                         <div class="treatment-name">${t.name}:</div>
                         <div class="treatment-detail">Đã dùng: ${t.time_used} / ${t.total_time} buổi</div>
                         <div class="treatment-radio">
-                            <input class="select-treatment" type="radio" id="radio-box-${t.treatment_id}" name="treatment_id" value="${t.treatment_id}" data-card-id="${c.id}" required>
+                            <input class="select-treatment" type="radio" id="radio-box-${t.treatment_id}-${c.id}" name="treatment_id" value="${t.treatment_id}" data-card-id="${c.id}" required>
                         </div>
                         </label>
                     </div>`;
                     if (parseInt(t.time_used) >= parseInt(t.total_time)) {
-                        const tick_box = document.getElementById("radio-box-" + t.treatment_id);
+                        const tick_box = document.getElementById("radio-box-" + t.treatment_id + "-" + c.id);
                         tick_box.style.display = 'none';
-                        console.log("Thẻ " + t.name + " hết lượt");
+                        console.log("Liệu trình " + t.treatment_id + " hết lượt");
                     }
                 });
             }

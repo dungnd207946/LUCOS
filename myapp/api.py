@@ -14,7 +14,7 @@ from myapp.Services.user           import getStaff
 from myapp.Services.spa            import getSpaCardCustomer, getCustomerCardDetail
 from myapp.templates.config        import db
 from myapp.auth                    import admin_required, dev_required, prevent_guest
-from werkzeug.utils                import secure_filename
+
 
 api = Blueprint('api', __name__, static_folder='static', template_folder='templates')
 
@@ -73,25 +73,8 @@ def create_customer():
             birth_date      = request.form['birth_date']
             skin            = request.form['skin']
             gender          = request.form.get('gender', 'Không')
-            # file            = request.files['profile_image']
-            file = None
             note            = request.form['customer_note']
-            if file:
-                filename = secure_filename(file.filename)  # Đảm bảo tên file an toàn
-                # Kiểm tra và tạo thư mục nếu chưa tồn tại
-                if not os.path.exists(app.config['UPLOAD_FOLDER']):
-                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-                save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                save_path = save_path.replace("\\", "/")
-                abs_save_path = 'myapp' + save_path
-                file.save(abs_save_path)
-                if os.path.exists(abs_save_path):
-                    print("File đã được lưu thành công!")
-                else:
-                    print("Lỗi: Không thể lưu tệp.")
-            else:
-                save_path = None
             with db.session.begin_nested():
                 new_customer = Khach_hang(id=id,
                                           ten_khach_hang=name,
@@ -106,7 +89,6 @@ def create_customer():
                                           point=0,
                                           active=1,
                                           gender=gender,
-                                          profile_image=save_path,
                                           note=note
                                           )
                 db.session.add(new_customer)
@@ -143,33 +125,7 @@ def update_khach_hang_by_id(khach_hang_id):
                 birth_date      = request.form['birth_date']
                 skin            = request.form.get('skin_type')
                 gender          = request.form.get('gender', 'Không')
-                # file            = request.files['profile_image']
-                file = None
                 note            = request.form['customer_note']
-
-                if file:
-                    filename = secure_filename(file.filename)  # Đảm bảo tên file an toàn
-
-                    # Kiểm tra xem user đã có ảnh cũ không
-                    if customer.profile_image:
-                        old_image_path = 'myapp' + customer.profile_image
-                        if old_image_path and os.path.exists(old_image_path):
-                            os.remove(old_image_path)
-
-                    # Lấy đường dẫn tương đối chính xác để lưu file
-                    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    save_path = save_path.replace("\\", "/")
-                    abs_save_path = 'myapp' + save_path
-
-                    # Lưu ảnh mới vào folder
-                    file.save(abs_save_path)
-
-                    if os.path.exists(abs_save_path):
-                        print("File đã được lưu thành công!")
-                    else:
-                        print("Lỗi: Không thể lưu tệp.")
-                else:
-                    save_path = None
 
                 customer.ten_khach_hang  = name
                 customer.so_dien_thoai   = phone_number
@@ -181,7 +137,6 @@ def update_khach_hang_by_id(khach_hang_id):
                 customer.ngay_sinh       = birth_date
                 customer.skin_property   = skin
                 customer.gender          = gender
-                customer.profile_image   = save_path
                 customer.note            = note
                 for customer_skin in customer_skins:
                     customer_skin.skin_type_id = int(skin)

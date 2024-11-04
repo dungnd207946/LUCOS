@@ -8,19 +8,18 @@
 {% block content %}
     {% for user in detail %}
     <div class="create container">
-        <form enctype="multipart/form-data" action="{{ url_for('routes.update_khach_hang_by_id', khach_hang_id=user.id) }}" method="post">
+        <form action="{{ url_for('routes.update_khach_hang_by_id', khach_hang_id=user.id) }}" method="post">
             <h3 class="text-center mb-4">Thông tin cá nhân</h3>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="custom-label" for="profile_image">Ảnh đại diện</label>
-                        <div class="image-input" id="image-input" onclick="document.getElementById('profile_image').click()">
-                            <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" onchange="previewImage()" style="display: none">
-                            <img id="image-preview" class="image-preview" src="{{user.profile_image}}" alt="Ảnh đại diện" style="display: block">
+                        <div class="image-input" id="image-input" >
+                            <input type="file" class="form-control" id="profile_image" name="profile_image" accept="image/*" style="display: none">
+                            <img id="image-preview" class="image-preview" alt="Ảnh đại diện" style="display: block">
                             <div class="camera-icon" >
                                 <i class="fas fa-camera"></i>
                             </div>
-                            <span class="choose-file-text" onclick="document.getElementById('profile_image').click()">Chọn tệp</span>
 
                         </div>
                     </div>

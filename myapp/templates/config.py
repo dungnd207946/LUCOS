@@ -17,7 +17,7 @@ app.config['MYSQL_DATABASE_HOST']            = os.getenv('MYSQL_DATABASE_HOST')
 app.secret_key                               = 'Dunga3k46pbc2002@'
 app.config['SQLALCHEMY_DATABASE_URI']        = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS') == 'True'
-app.config['UPLOAD_FOLDER']                  = '/static/uploads/customer_avatar'
+# app.config['UPLOAD_FOLDER']                  = '/static/uploads/customer_avatar'
 
 mysql.init_app(app)
 db = SQLAlchemy(app)
