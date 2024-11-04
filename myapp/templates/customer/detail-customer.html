@@ -5,17 +5,6 @@
 {% endblock %}
 
 {% block content %}
-    <script>
-        // Kiểm tra xem có thông báo được truyền từ Flask không
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                // Hiển thị thông báo dưới dạng hộp thoại pop-up
-                window.onload = function() {
-                    alert('{{ messages[0] }}');
-                };
-            {% endif %}
-        {% endwith %}
-    </script>
     {% for user in detail %}
     <div class="wrapper">
         <div class="header-div">
@@ -31,8 +20,8 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="custom-label" for="image-preview">Ảnh </label>
-                            <div class="image-input" id="image-input" onclick="document.getElementById('profile_image').click()">
-                                <img id="image-preview" class="image-preview" src="{{user.profile_image}}" alt="Ảnh đại diện">
+                            <div class="image-input" id="image-input">
+                                <img id="image-preview" class="image-preview" alt="Ảnh đại diện">
                             </div>
                         </div>
                     </div>
